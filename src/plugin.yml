@@ -1,0 +1,6 @@
+name: Lonia
+version: 1.0
+api-version: 1.13
+description: Advanced asynchronous anticheat solution
+main: me.five.lonia.Lonia
+author: five
