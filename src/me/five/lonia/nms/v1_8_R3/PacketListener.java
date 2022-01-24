@@ -4,12 +4,8 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import me.five.lonia.data.PlayerData;
-import me.five.lonia.packet.client.CPacketEntityAction;
-import me.five.lonia.packet.client.CPacketFlying;
-import me.five.lonia.packet.client.CPacketKeepAlive;
-import me.five.lonia.packet.client.CPacketTransaction;
-import me.five.lonia.packet.server.SPacketEntityVelocity;
-import me.five.lonia.packet.server.SPacketKeepAlive;
+import me.five.lonia.packet.client.*;
+import me.five.lonia.packet.server.*;
 import me.five.lonia.util.PacketUtil;
 import net.minecraft.server.v1_8_R3.*;
 
@@ -57,6 +53,111 @@ public class PacketListener extends ChannelDuplexHandler {
             int velocityZ = velocityZField.getInt(nmsPacket);
             SPacketEntityVelocity loniaEntityVelocityPacket = new SPacketEntityVelocity(entityId, velocityX, velocityY, velocityZ);
             data.getPacketOutProcessor().processPacket(loniaEntityVelocityPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutEntityEffect) {
+
+            PacketPlayOutEntityEffect nmsPacket = (PacketPlayOutEntityEffect) packet;
+            Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
+            entityIdField.setAccessible(true);
+            int entityId = entityIdField.getInt(nmsPacket);
+            Field effectIdField = nmsPacket.getClass().getDeclaredField("b");
+            effectIdField.setAccessible(true);
+            byte effectId = effectIdField.getByte(nmsPacket);
+            Field amplifierField = nmsPacket.getClass().getDeclaredField("c");
+            amplifierField.setAccessible(true);
+            byte amplifier = amplifierField.getByte(nmsPacket);
+            Field ticksField = nmsPacket.getClass().getDeclaredField("d");
+            ticksField.setAccessible(true);
+            int ticks = ticksField.getInt(nmsPacket);
+            SPacketEntityEffect loniaEffectPacket = new SPacketEntityEffect(entityId, effectId, amplifier, ticks);
+            data.getPacketOutProcessor().processPacket(loniaEffectPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutRemoveEntityEffect) {
+
+            PacketPlayOutRemoveEntityEffect nmsPacket = (PacketPlayOutRemoveEntityEffect) packet;
+            Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
+            entityIdField.setAccessible(true);
+            int entityId = entityIdField.getInt(nmsPacket);
+            Field effectIdField = nmsPacket.getClass().getDeclaredField("b");
+            effectIdField.setAccessible(true);
+            byte effectId = ((Integer)effectIdField.getInt(nmsPacket)).byteValue();
+            SPacketRemoveEffect loniaRemoveEffectPacket = new SPacketRemoveEffect(entityId, effectId);
+            data.getPacketOutProcessor().processPacket(loniaRemoveEffectPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutAbilities) {
+
+            PacketPlayOutAbilities nmsPacket = (PacketPlayOutAbilities) packet;
+            Field flySpeedField = nmsPacket.getClass().getDeclaredField("e");
+            flySpeedField.setAccessible(true);
+            float flyingSpeed = flySpeedField.getFloat(nmsPacket);
+            Field walkSpeedField = nmsPacket.getClass().getDeclaredField("f");
+            walkSpeedField.setAccessible(true);
+            float walkingSpeed = walkSpeedField.getFloat(nmsPacket);
+            SPacketAbilities loniaAbilitiesPacket = new SPacketAbilities(nmsPacket.b(), nmsPacket.c(), nmsPacket.a(), nmsPacket.d(), flyingSpeed, walkingSpeed);
+            data.getPacketOutProcessor().processPacket(loniaAbilitiesPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutPosition) {
+
+            PacketPlayOutPosition nmsPacket = (PacketPlayOutPosition) packet;
+            Field xField = nmsPacket.getClass().getDeclaredField("a");
+            xField.setAccessible(true);
+            double x = xField.getDouble(nmsPacket);
+            Field yField = nmsPacket.getClass().getDeclaredField("b");
+            yField.setAccessible(true);
+            double y = yField.getDouble(nmsPacket);
+            Field zField = nmsPacket.getClass().getDeclaredField("c");
+            zField.setAccessible(true);
+            double z = zField.getDouble(nmsPacket);
+            Field yawField = nmsPacket.getClass().getDeclaredField("d");
+            yawField.setAccessible(true);
+            float yaw = yawField.getFloat(nmsPacket);
+            Field pitchField = nmsPacket.getClass().getDeclaredField("e");
+            pitchField.setAccessible(true);
+            float pitch = pitchField.getFloat(nmsPacket);
+            SPacketPosition loniaPositionPacket = new SPacketPosition(x, y, z, yaw, pitch, false);
+            data.getPacketOutProcessor().processPacket(loniaPositionPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutExplosion) {
+
+            PacketPlayOutExplosion nmsPacket = (PacketPlayOutExplosion) packet;
+            Field xField = nmsPacket.getClass().getDeclaredField("a");
+            xField.setAccessible(true);
+            double x = xField.getDouble(nmsPacket);
+            Field yField = nmsPacket.getClass().getDeclaredField("b");
+            yField.setAccessible(true);
+            double y = yField.getDouble(nmsPacket);
+            Field zField = nmsPacket.getClass().getDeclaredField("c");
+            zField.setAccessible(true);
+            double z = zField.getDouble(nmsPacket);
+            Field powerField = nmsPacket.getClass().getDeclaredField("d");
+            powerField.setAccessible(true);
+            float power = powerField.getFloat(nmsPacket);
+            Field motionXField = nmsPacket.getClass().getDeclaredField("f");
+            motionXField.setAccessible(true);
+            float motionX = motionXField.getFloat(nmsPacket);
+            Field motionYField = nmsPacket.getClass().getDeclaredField("g");
+            motionYField.setAccessible(true);
+            float motionY = motionYField.getFloat(nmsPacket);
+            Field motionZField = nmsPacket.getClass().getDeclaredField("h");
+            motionZField.setAccessible(true);
+            float motionZ = motionZField.getFloat(nmsPacket);
+            SPacketExplosion loniaExplosionPacket = new SPacketExplosion(x, y, z, power, motionX, motionY, motionZ);
+            data.getPacketOutProcessor().processPacket(loniaExplosionPacket);
             return;
 
         }
@@ -134,6 +235,21 @@ public class PacketListener extends ChannelDuplexHandler {
             int enumId = PacketUtil.getEnumValue(nmsPacket.b());
             CPacketEntityAction loniaEntityActionPacket = new CPacketEntityAction(enumId);
             data.getPacketInProcessor().processPacket(loniaEntityActionPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInAbilities) {
+
+            PacketPlayInAbilities nmsPacket = (PacketPlayInAbilities) packet;
+            Field flySpeedField = nmsPacket.getClass().getDeclaredField("e");
+            flySpeedField.setAccessible(true);
+            float flyingSpeed = flySpeedField.getFloat(nmsPacket);
+            Field walkSpeedField = nmsPacket.getClass().getDeclaredField("f");
+            walkSpeedField.setAccessible(true);
+            float walkingSpeed = walkSpeedField.getFloat(nmsPacket);
+            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities(nmsPacket.isFlying(), nmsPacket.c(), nmsPacket.a(), nmsPacket.d(), flyingSpeed, walkingSpeed);
+            data.getPacketInProcessor().processPacket(loniaAbilitiesPacket);
             return;
 
         }

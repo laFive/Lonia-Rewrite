@@ -2,6 +2,8 @@ package me.five.lonia.data.processor;
 
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.LoniaPacket;
+import me.five.lonia.packet.server.SPacketRemoveEffect;
+import org.bukkit.Bukkit;
 
 public class PacketOutProcessor {
 
@@ -12,6 +14,12 @@ public class PacketOutProcessor {
     }
 
     public void processPacket(LoniaPacket packet) {
+
+        if (packet instanceof SPacketRemoveEffect) {
+
+            Bukkit.broadcastMessage(((SPacketRemoveEffect) packet).getEffectType().name());
+
+        }
 
     }
 

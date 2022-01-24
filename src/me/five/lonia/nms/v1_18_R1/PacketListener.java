@@ -4,14 +4,13 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import me.five.lonia.data.PlayerData;
-import me.five.lonia.packet.client.CPacketEntityAction;
-import me.five.lonia.packet.client.CPacketFlying;
-import me.five.lonia.packet.client.CPacketKeepAlive;
-import me.five.lonia.packet.client.CPacketTransaction;
-import me.five.lonia.packet.server.SPacketEntityVelocity;
-import me.five.lonia.packet.server.SPacketKeepAlive;
+import me.five.lonia.packet.client.*;
+import me.five.lonia.packet.server.*;
 import me.five.lonia.util.PacketUtil;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.world.effect.MobEffectList;
+
+import java.lang.reflect.Field;
 
 public class PacketListener extends ChannelDuplexHandler {
 
@@ -40,6 +39,55 @@ public class PacketListener extends ChannelDuplexHandler {
             PacketPlayOutEntityVelocity nmsPacket = (PacketPlayOutEntityVelocity) packet;
             SPacketEntityVelocity loniaEntityVelocityPacket = new SPacketEntityVelocity(nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.e());
             data.getPacketOutProcessor().processPacket(loniaEntityVelocityPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutEntityEffect) {
+
+            PacketPlayOutEntityEffect nmsPacket = (PacketPlayOutEntityEffect) packet;
+            SPacketEntityEffect loniaEffectPacket = new SPacketEntityEffect(nmsPacket.c(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f());
+            data.getPacketOutProcessor().processPacket(loniaEffectPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutRemoveEntityEffect) {
+
+            PacketPlayOutRemoveEntityEffect nmsPacket = (PacketPlayOutRemoveEntityEffect) packet;
+            Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
+            entityIdField.setAccessible(true);
+            int entityId = entityIdField.getInt(nmsPacket);
+            byte effectId = ((Integer)MobEffectList.a(nmsPacket.b())).byteValue();
+            SPacketRemoveEffect loniaRemoveEffectPacket = new SPacketRemoveEffect(entityId, effectId);
+            data.getPacketOutProcessor().processPacket(loniaRemoveEffectPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutAbilities) {
+
+            PacketPlayOutAbilities nmsPacket = (PacketPlayOutAbilities) packet;
+            SPacketAbilities loniaAbilitiesPacket = new SPacketAbilities(nmsPacket.c(), nmsPacket.d(), nmsPacket.b(), nmsPacket.e(), nmsPacket.f(), nmsPacket.g());
+            data.getPacketOutProcessor().processPacket(loniaAbilitiesPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutPosition) {
+
+            PacketPlayOutPosition nmsPacket = (PacketPlayOutPosition) packet;
+            SPacketPosition loniaPositionPacket = new SPacketPosition(nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f(), nmsPacket.h());
+            data.getPacketOutProcessor().processPacket(loniaPositionPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutExplosion) {
+
+            PacketPlayOutExplosion nmsPacket = (PacketPlayOutExplosion) packet;
+            SPacketExplosion loniaExplosionPacket = new SPacketExplosion(nmsPacket.e(), nmsPacket.f(), nmsPacket.g(), nmsPacket.h(), nmsPacket.b(), nmsPacket.c(), nmsPacket.d());
+            data.getPacketOutProcessor().processPacket(loniaExplosionPacket);
             return;
 
         }
@@ -115,6 +163,15 @@ public class PacketListener extends ChannelDuplexHandler {
             int enumId = PacketUtil.getEnumValue(nmsPacket.c());
             CPacketEntityAction loniaEntityActionPacket = new CPacketEntityAction(enumId);
             data.getPacketInProcessor().processPacket(loniaEntityActionPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInAbilities) {
+
+            PacketPlayInAbilities nmsPacket = (PacketPlayInAbilities) packet;
+            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities(nmsPacket.b());
+            data.getPacketInProcessor().processPacket(loniaAbilitiesPacket);
             return;
 
         }

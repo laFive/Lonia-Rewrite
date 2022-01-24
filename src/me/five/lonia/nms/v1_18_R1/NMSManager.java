@@ -16,7 +16,7 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public void sendTransaction(Player player, short uid) {
-        ((CraftPlayer)player).getHandle().b.sendPacket(new ClientboundPingPacket(uid));
+        ((CraftPlayer)player).getHandle().b.a(new ClientboundPingPacket(uid));
     }
 
     @Override
