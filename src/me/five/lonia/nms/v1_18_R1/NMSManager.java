@@ -5,6 +5,7 @@ import me.five.lonia.util.ServerVersion;
 import net.minecraft.network.protocol.game.ClientboundPingPacket;
 import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -20,7 +21,7 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
     }
 
     @Override
-    public Material getBlockType() {
+    public Material getBlockType(int blockX, int blockY, int blockZ, World world) {
         return null;
     }
 

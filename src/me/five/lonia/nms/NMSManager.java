@@ -4,6 +4,7 @@ import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public abstract class NMSManager {
@@ -22,7 +23,7 @@ public abstract class NMSManager {
 
     public abstract void sendTransaction(Player player, short uid);
 
-    public abstract Material getBlockType();
+    public abstract Material getBlockType(int blockX, int blockY, int blockZ, World world);
 
     public abstract void addPacketListener(PlayerData playerData);
 

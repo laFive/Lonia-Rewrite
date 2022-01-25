@@ -6,9 +6,9 @@ import io.netty.channel.ChannelPromise;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
-import me.five.lonia.util.GameMode;
-import me.five.lonia.util.PacketUtil;
+import me.five.lonia.util.*;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -347,6 +347,41 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
+        if (packet instanceof PacketPlayOutHeldItemSlot) {
+
+            PacketPlayOutHeldItemSlot nmsPacket = (PacketPlayOutHeldItemSlot) packet;
+            Field slotField = nmsPacket.getClass().getDeclaredField("a");
+            slotField.setAccessible(true);
+            int slot = slotField.getInt(nmsPacket);
+            SPacketSetHeldItemSlot loniaSetSlotPacket = new SPacketSetHeldItemSlot(slot);
+            data.getPacketOutProcessor().processPacket(loniaSetSlotPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutMapChunk) {
+
+            PacketPlayOutMapChunk nmsPacket = (PacketPlayOutMapChunk) packet;
+            Field chunkXField = nmsPacket.getClass().getDeclaredField("a");
+            chunkXField.setAccessible(true);
+            int chunkX = chunkXField.getInt(nmsPacket);
+            Field chunkYField = nmsPacket.getClass().getDeclaredField("b");
+            chunkYField.setAccessible(true);
+            int chunkY = chunkYField.getInt(nmsPacket);
+            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk(chunkX, chunkY);
+            data.getPacketOutProcessor().processPacket(loniaLevelChunkPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutMapChunkBulk) {
+
+            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk();
+            data.getPacketOutProcessor().processPacket(loniaLevelChunkPacket);
+            return;
+
+        }
+
     }
 
     @Override
@@ -441,7 +476,56 @@ public class PacketListener extends ChannelDuplexHandler {
 
         if (packet instanceof PacketPlayInArmAnimation) {
 
-            data.getPacketInProcessor().processPacket(new SPacketArmAnimation());
+            data.getPacketInProcessor().processPacket(new SPacketArmAnimation(PlayerHand.MAIN));
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInUseEntity) {
+
+            PacketPlayInUseEntity nmsPacket = (PacketPlayInUseEntity) packet;
+            Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
+            entityIdField.setAccessible(true);
+            int entityId = entityIdField.getInt(nmsPacket);
+            UseEntityAction action = UseEntityAction.values()[nmsPacket.a().ordinal()];
+            CPacketUseEntity loniaUseEntityPacket = new CPacketUseEntity(entityId, action);
+            data.getPacketOutProcessor().processPacket(loniaUseEntityPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInBlockPlace) {
+
+            PacketPlayInBlockPlace nmsPacket = (PacketPlayInBlockPlace) packet;
+            CPacketBlockPlace loniaBlockPlacePacket = new CPacketBlockPlace(PlayerHand.MAIN, new LoniaBlockLocation(nmsPacket.a().getX(), nmsPacket.a().getY(), nmsPacket.a().getZ()), nmsPacket.getFace(), new ItemStack(nmsPacket.getItemStack().getItem().b()), nmsPacket.d(), nmsPacket.e(), nmsPacket.f());
+            data.getPacketOutProcessor().processPacket(loniaBlockPlacePacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInBlockDig) {
+
+            PacketPlayInBlockDig nmsPacket = (PacketPlayInBlockDig) packet;
+            CPacketBlockDig loniaBlockDigPacket = new CPacketBlockDig(new LoniaBlockLocation(nmsPacket.a().getX(), nmsPacket.a().getY(), nmsPacket.a().getZ()), PlayerDigAction.values()[nmsPacket.c().ordinal()]);
+            data.getPacketInProcessor().processPacket(loniaBlockDigPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInClientCommand) {
+
+            PacketPlayInClientCommand nmsPacket = (PacketPlayInClientCommand) packet;
+            CPacketClientCommand loniaClientCommandPacket = new CPacketClientCommand(ClientCommand.values()[nmsPacket.a().ordinal()]);
+            data.getPacketInProcessor().processPacket(loniaClientCommandPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInHeldItemSlot) {
+
+            PacketPlayInHeldItemSlot nmsPacket = (PacketPlayInHeldItemSlot) packet;
+            CPacketSetHeldItemSlot loniaSetHeldItemSlotPacket = new CPacketSetHeldItemSlot(nmsPacket.a());
+            data.getPacketInProcessor().processPacket(loniaSetHeldItemSlotPacket);
             return;
 
         }
