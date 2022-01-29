@@ -1,4 +1,5 @@
-package me.five.lonia.nms.v1_18_R1;
+/*
+package me.five.lonia.nms.v1_16_R3;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -7,11 +8,11 @@ import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.util.*;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.world.effect.MobEffectList;
-import org.bukkit.inventory.ItemStack;
+import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.entity.Mob;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 public class PacketListener extends ChannelDuplexHandler {
 
@@ -29,7 +30,10 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutKeepAlive) {
 
             PacketPlayOutKeepAlive nmsPacket = (PacketPlayOutKeepAlive) packet;
-            SPacketKeepAlive loniaKeepAlivePacket = new SPacketKeepAlive(nmsPacket.b());
+            Field idField = nmsPacket.getClass().getDeclaredField("a");
+            idField.setAccessible(true);
+            long id = idField.getLong(nmsPacket);
+            SPacketKeepAlive loniaKeepAlivePacket = new SPacketKeepAlive(id);
             data.getPacketOutProcessor().processPacket(loniaKeepAlivePacket);
             return;
 
@@ -38,7 +42,11 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutEntityVelocity) {
 
             PacketPlayOutEntityVelocity nmsPacket = (PacketPlayOutEntityVelocity) packet;
-            SPacketEntityVelocity loniaEntityVelocityPacket = new SPacketEntityVelocity(nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.e());
+            int entityId = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            int velX = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            int velY = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            int velZ = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            SPacketEntityVelocity loniaEntityVelocityPacket = new SPacketEntityVelocity(entityId, velX, velY, velZ);
             data.getPacketOutProcessor().processPacket(loniaEntityVelocityPacket);
             return;
 
@@ -47,7 +55,11 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutEntityEffect) {
 
             PacketPlayOutEntityEffect nmsPacket = (PacketPlayOutEntityEffect) packet;
-            SPacketEntityEffect loniaEffectPacket = new SPacketEntityEffect(nmsPacket.c(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f());
+            int i = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            int i1 = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            byte b = (byte) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            byte b1 = (byte) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            SPacketEntityEffect loniaEffectPacket = new SPacketEntityEffect(i, b, b1, i1);
             data.getPacketOutProcessor().processPacket(loniaEffectPacket);
             return;
 
@@ -56,10 +68,9 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutRemoveEntityEffect) {
 
             PacketPlayOutRemoveEntityEffect nmsPacket = (PacketPlayOutRemoveEntityEffect) packet;
-            Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
-            entityIdField.setAccessible(true);
-            int entityId = entityIdField.getInt(nmsPacket);
-            byte effectId = ((Integer)MobEffectList.a(nmsPacket.b())).byteValue();
+            int entityId = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            MobEffectList mel = (MobEffectList) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            byte effectId = ((Integer)MobEffectList.getId(mel)).byteValue();
             SPacketRemoveEffect loniaRemoveEffectPacket = new SPacketRemoveEffect(entityId, effectId);
             data.getPacketOutProcessor().processPacket(loniaRemoveEffectPacket);
             return;
@@ -69,7 +80,13 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutAbilities) {
 
             PacketPlayOutAbilities nmsPacket = (PacketPlayOutAbilities) packet;
-            SPacketAbilities loniaAbilitiesPacket = new SPacketAbilities(nmsPacket.c(), nmsPacket.d(), nmsPacket.b(), nmsPacket.e(), nmsPacket.f(), nmsPacket.g());
+            boolean isFlying = (Boolean) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            boolean isInvulnerable = (Boolean) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            boolean allowFlying = (Boolean) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            boolean instaBuild = (Boolean) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            float walkSpeed = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "f");
+            float flySpeed = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "e");
+            SPacketAbilities loniaAbilitiesPacket = new SPacketAbilities(isFlying, allowFlying, isInvulnerable, instaBuild, flySpeed, walkSpeed);
             data.getPacketOutProcessor().processPacket(loniaAbilitiesPacket);
             return;
 
@@ -78,7 +95,12 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutPosition) {
 
             PacketPlayOutPosition nmsPacket = (PacketPlayOutPosition) packet;
-            SPacketPosition loniaPositionPacket = new SPacketPosition(nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f(), nmsPacket.h());
+            double d = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            double d1 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            double d2 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            float f = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            float f1 = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "e");
+            SPacketPosition loniaPositionPacket = new SPacketPosition(d, d1, d2, f, f1, false);
             data.getPacketOutProcessor().processPacket(loniaPositionPacket);
             return;
 
@@ -87,7 +109,14 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutExplosion) {
 
             PacketPlayOutExplosion nmsPacket = (PacketPlayOutExplosion) packet;
-            SPacketExplosion loniaExplosionPacket = new SPacketExplosion(nmsPacket.e(), nmsPacket.f(), nmsPacket.g(), nmsPacket.h(), nmsPacket.b(), nmsPacket.c(), nmsPacket.d());
+            double d = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            double d1 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            double d2 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            float f = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            float f1 = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "f");
+            float f2 = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "g");
+            float f3 = (Float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "h");
+            SPacketExplosion loniaExplosionPacket = new SPacketExplosion(d, d1, d2, f, f1, f2, f3);
             data.getPacketOutProcessor().processPacket(loniaExplosionPacket);
             return;
 
@@ -96,7 +125,9 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutMount) {
 
             PacketPlayOutMount nmsPacket = (PacketPlayOutMount) packet;
-            SPacketMount loniaMountPacket = new SPacketMount(nmsPacket.c(), nmsPacket.b());
+            int i = (Integer) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            int[] ia = (int[]) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            SPacketMount loniaMountPacket = new SPacketMount(i, ia);
             data.getPacketOutProcessor().processPacket(loniaMountPacket);
             return;
 
@@ -105,7 +136,8 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutRespawn) {
 
             PacketPlayOutRespawn nmsPacket = (PacketPlayOutRespawn) packet;
-            SPacketRespawn loniaRespawnPacket = new SPacketRespawn(GameMode.getFromId(nmsPacket.e().a()));
+            EnumGamemode gm = (EnumGamemode) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "e");
+            SPacketRespawn loniaRespawnPacket = new SPacketRespawn(GameMode.getFromId(gm.getId()));
             data.getPacketOutProcessor().processPacket(loniaRespawnPacket);
             return;
 
@@ -114,7 +146,14 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutNamedEntitySpawn) {
 
             PacketPlayOutNamedEntitySpawn nmsPacket = (PacketPlayOutNamedEntitySpawn) packet;
-            SPacketSpawnEntity loniaSpawnEntityPacket = new SPacketSpawnEntity(nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f(), (nmsPacket.g() * 360.0F) / 256.0F, (nmsPacket.h() * 360.0F) / 256.0F, true);
+            int i = (Integer) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+            UUID u = (UUID) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+            double d = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+            double d1 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "d");
+            double d2 = (Double) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "e");
+            byte b = (Byte) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "f");
+            byte b1 = (Byte) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "g");
+            SPacketSpawnEntity loniaSpawnEntityPacket = new SPacketSpawnEntity(i, u, d, d1, d2, (b * 360.0F) / 256.0F, (b1 * 360.0F) / 256.0F, true);
             data.getPacketOutProcessor().processPacket(loniaSpawnEntityPacket);
             return;
 
@@ -186,10 +225,10 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
-        if (packet instanceof ClientboundLevelChunkWithLightPacket) {
+        if (packet instanceof PacketPlayOutMapChunk) {
 
-            ClientboundLevelChunkWithLightPacket nmsPacket = (ClientboundLevelChunkWithLightPacket) packet;
-            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk(nmsPacket.b(), nmsPacket.c());
+            PacketPlayOutMapChunk nmsPacket = (PacketPlayOutMapChunk) packet;
+            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk(nmsPacket.c(), nmsPacket.d());
             data.getPacketOutProcessor().processPacket(loniaLevelChunkPacket);
             return;
 
@@ -291,7 +330,7 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayInAbilities) {
 
             PacketPlayInAbilities nmsPacket = (PacketPlayInAbilities) packet;
-            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities(nmsPacket.b());
+            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities((Boolean) nmsPacket.getClass().getMethod("isFlying").invoke(nmsPacket));
             data.getPacketInProcessor().processPacket(loniaAbilitiesPacket);
             return;
 
@@ -383,3 +422,4 @@ public class PacketListener extends ChannelDuplexHandler {
     }
 
 }
+*/

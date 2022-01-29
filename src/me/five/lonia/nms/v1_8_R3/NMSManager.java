@@ -5,8 +5,9 @@ import me.five.lonia.util.ServerVersion;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTransaction;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class NMSManager extends me.five.lonia.nms.NMSManager {
@@ -21,7 +22,7 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
     }
 
     @Override
-    public Material getBlockType(int blockX, int blockY, int blockZ, World world) {
+    public Material getBlockType(int blockX, int blockY, int blockZ, Player player) {
         return null;
     }
 
@@ -36,6 +37,16 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
         if (playerConnection != null && !playerConnection.isDisconnected()) {
             playerConnection.networkManager.channel.pipeline().remove("Lonia");
         }
+    }
+
+    @Override
+    public double getEntityWidth(Entity entity) {
+        return ((CraftEntity)entity).getHandle().width;
+    }
+
+    @Override
+    public double getEntityHeight(Entity entity) {
+        return ((CraftEntity)entity).getHandle().length;
     }
 
 }

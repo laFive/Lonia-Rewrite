@@ -1,12 +1,13 @@
-package me.five.lonia.nms.v1_18_R1;
+/*
+package me.five.lonia.nms.v1_16_R3;
 
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ServerVersion;
-import net.minecraft.network.protocol.game.ClientboundPingPacket;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.v1_16_R3.PacketPlayOutTransaction;
+import net.minecraft.server.v1_16_R3.PlayerConnection;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public void sendTransaction(Player player, short uid) {
-        ((CraftPlayer)player).getHandle().b.a(new ClientboundPingPacket(uid));
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket(new PacketPlayOutTransaction(0, uid, false));
     }
 
     @Override
@@ -28,25 +29,26 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public void addPacketListener(PlayerData playerData) {
-        ((CraftPlayer) playerData.getPlayer()).getHandle().b.a().k.pipeline().addBefore("packet_handler", "Lonia", new PacketListener(playerData));
+        ((CraftPlayer) playerData.getPlayer()).getHandle().playerConnection.a().channel.pipeline().addBefore("packet_handler", "Lonia", new PacketListener(playerData));
     }
 
     @Override
     public void removePacketListener(Player player) {
-        PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().b;
+        PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
         if (playerConnection != null && !playerConnection.isDisconnected()) {
-            playerConnection.a().k.pipeline().remove("Lonia");
+            playerConnection.a().channel.pipeline().remove("Lonia");
         }
     }
 
     @Override
     public double getEntityWidth(Entity entity) {
-        return ((CraftEntity)entity).getHandle().a(((CraftEntity)entity).getHandle().ak()).a;
+        return ((CraftEntity)entity).getHandle().getWidth();
     }
 
     @Override
     public double getEntityHeight(Entity entity) {
-        return ((CraftEntity)entity).getHandle().a(((CraftEntity)entity).getHandle().ak()).b;
+        return ((CraftEntity)entity).getHandle().getHeight();
     }
 
 }
+*/

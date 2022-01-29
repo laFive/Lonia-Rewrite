@@ -1,14 +1,17 @@
-package me.five.lonia.nms.v1_18_R1;
+package me.five.lonia.nms.v1_17_R1;
 
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ServerVersion;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPingPacket;
 import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class NMSManager extends me.five.lonia.nms.NMSManager {
 
@@ -18,7 +21,11 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public void sendTransaction(Player player, short uid) {
-        ((CraftPlayer)player).getHandle().b.a(new ClientboundPingPacket(uid));
+        try {
+            ((CraftPlayer)player).getHandle().b.getClass().getMethod("sendPacket", Packet.class).invoke(((CraftPlayer)player).getHandle().b, new ClientboundPingPacket(uid));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -41,12 +48,22 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public double getEntityWidth(Entity entity) {
-        return ((CraftEntity)entity).getHandle().a(((CraftEntity)entity).getHandle().ak()).a;
+        try {
+            return (double) ((CraftEntity)entity).getHandle().getClass().getMethod("getWidth").invoke(((CraftEntity)entity).getHandle());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
     public double getEntityHeight(Entity entity) {
-        return ((CraftEntity)entity).getHandle().a(((CraftEntity)entity).getHandle().ak()).b;
+        try {
+            return (double) ((CraftEntity)entity).getHandle().getClass().getMethod("getHeight").invoke(((CraftEntity)entity).getHandle());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 }

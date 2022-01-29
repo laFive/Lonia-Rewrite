@@ -1,23 +1,22 @@
 package me.five.lonia.packet.client;
 
+import me.five.lonia.packet.LoniaPacket;
 import org.bukkit.inventory.ItemStack;
 
-public class CPacketClickWindow {
+public class CPacketClickWindow extends LoniaPacket {
 
     private int windowId;
     private int slotId;
     private int button;
     private short transactionId;
-    private ItemStack stack;
     private int mode;
     
-    public CPacketClickWindow(int windowId, int slotId, int button, short transactionId, ItemStack stack, int mode) {
+    public CPacketClickWindow(int windowId, int slotId, int button, short transactionId, int mode) {
     
         this.windowId = windowId;
         this.slotId = slotId;
         this.button = button;
         this.transactionId = transactionId;
-        this.stack = stack;
         this.mode = mode;
     
     }
@@ -35,11 +34,7 @@ public class CPacketClickWindow {
     }
     
     public short getTransactionId() {
-        return transactionid;
-    }
-    
-    public ItemStack getItemStack() }
-        return stack;
+        return transactionId;
     }
     
     public int getMode() {

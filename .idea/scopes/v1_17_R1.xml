@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="v1_17_R1" pattern="src:me.five.lonia.nms.v1_17_R1..*&amp;&amp;!ext[D:\Development\IDEA-Projects\Lonia-Rewrite\libs\spigot-1.18.1-R0.1-SNAPSHOT-remapped.jar]:*/&amp;&amp;!ext[D:\Development\APIs\spigot-1.18.1-R0.1-SNAPSHOT.jar]:spigot-1.18.1-R0.1-SNAPSHOT.jar//*&amp;&amp;!ext[D:\Development\APIs\spigot-1.18.1-R0.1-SNAPSHOT.jar]:*/||ext[D:\Development\APIs\spigot-1.17.1.jar]:*/" />
+</component>

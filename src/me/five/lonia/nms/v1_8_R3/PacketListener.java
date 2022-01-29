@@ -382,6 +382,42 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
+        if (packet instanceof PacketPlayOutCloseWindow) {
+
+            PacketPlayOutCloseWindow nmsPacket = (PacketPlayOutCloseWindow) packet;
+            Field windowIdField = nmsPacket.getClass().getDeclaredField("a");
+            windowIdField.setAccessible(true);
+            int windowId = windowIdField.getInt(nmsPacket);
+            SPacketCloseWindow loniaCloseWindowPacket = new SPacketCloseWindow(windowId);
+            data.getPacketOutProcessor().processPacket(loniaCloseWindowPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayOutOpenWindow) {
+
+            PacketPlayOutOpenWindow nmsPacket = (PacketPlayOutOpenWindow) packet;
+            Field windowIdField = nmsPacket.getClass().getDeclaredField("a");
+            windowIdField.setAccessible(true);
+            int windowId = windowIdField.getInt(nmsPacket);
+            Field typeField = nmsPacket.getClass().getDeclaredField("b");
+            typeField.setAccessible(true);
+            String type = (String) typeField.get(nmsPacket);
+            Field titleField = nmsPacket.getClass().getDeclaredField("c");
+            titleField.setAccessible(true);
+            IChatBaseComponent title = (IChatBaseComponent) titleField.get(nmsPacket);
+            Field slotsField = nmsPacket.getClass().getDeclaredField("d");
+            slotsField.setAccessible(true);
+            int slots = slotsField.getInt(nmsPacket);
+            Field entityIdField = nmsPacket.getClass().getDeclaredField("e");
+            entityIdField.setAccessible(true);
+            int entityId = entityIdField.getInt(nmsPacket);
+            SPacketOpenWindow loniaOpenWindowPacket = new SPacketOpenWindow(windowId, type, title.getText(), slots, entityId);
+            data.getPacketOutProcessor().processPacket(loniaOpenWindowPacket);
+            return;
+
+        }
+
     }
 
     @Override
@@ -526,6 +562,36 @@ public class PacketListener extends ChannelDuplexHandler {
             PacketPlayInHeldItemSlot nmsPacket = (PacketPlayInHeldItemSlot) packet;
             CPacketSetHeldItemSlot loniaSetHeldItemSlotPacket = new CPacketSetHeldItemSlot(nmsPacket.a());
             data.getPacketInProcessor().processPacket(loniaSetHeldItemSlotPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInCloseWindow) {
+
+            PacketPlayInCloseWindow nmsPacket = (PacketPlayInCloseWindow) packet;
+            Field windowIdField = nmsPacket.getClass().getDeclaredField("id");
+            windowIdField.setAccessible(true);
+            int windowId = windowIdField.getInt(nmsPacket);
+            CPacketCloseWindow loniaCloseWindowPacket = new CPacketCloseWindow(windowId);
+            data.getPacketInProcessor().processPacket(loniaCloseWindowPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInWindowClick) {
+
+            PacketPlayInWindowClick nmsPacket = (PacketPlayInWindowClick) packet;
+            CPacketClickWindow loniaClickWindowPacket = new CPacketClickWindow(nmsPacket.a(), nmsPacket.b(), nmsPacket.c(), nmsPacket.d(), nmsPacket.f());
+            data.getPacketInProcessor().processPacket(loniaClickWindowPacket);
+            return;
+
+        }
+
+        if (packet instanceof PacketPlayInSteerVehicle) {
+
+            PacketPlayInSteerVehicle nmsPacket = (PacketPlayInSteerVehicle) packet;
+            CPacketInput loniaInputPacket = new CPacketInput(nmsPacket.a(), nmsPacket.b(), nmsPacket.c(), nmsPacket.d());
+            data.getPacketInProcessor().processPacket(loniaInputPacket);
             return;
 
         }

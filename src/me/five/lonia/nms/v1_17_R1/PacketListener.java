@@ -1,4 +1,4 @@
-package me.five.lonia.nms.v1_18_R1;
+package me.five.lonia.nms.v1_17_R1;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,7 +8,9 @@ import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.util.*;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectList;
+import net.minecraft.world.level.EnumGamemode;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -59,7 +61,7 @@ public class PacketListener extends ChannelDuplexHandler {
             Field entityIdField = nmsPacket.getClass().getDeclaredField("a");
             entityIdField.setAccessible(true);
             int entityId = entityIdField.getInt(nmsPacket);
-            byte effectId = ((Integer)MobEffectList.a(nmsPacket.b())).byteValue();
+            byte effectId = ((Integer)MobEffectList.class.getMethod("getId", MobEffectList.class).invoke(null, nmsPacket.b())).byteValue();
             SPacketRemoveEffect loniaRemoveEffectPacket = new SPacketRemoveEffect(entityId, effectId);
             data.getPacketOutProcessor().processPacket(loniaRemoveEffectPacket);
             return;
@@ -105,7 +107,7 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayOutRespawn) {
 
             PacketPlayOutRespawn nmsPacket = (PacketPlayOutRespawn) packet;
-            SPacketRespawn loniaRespawnPacket = new SPacketRespawn(GameMode.getFromId(nmsPacket.e().a()));
+            SPacketRespawn loniaRespawnPacket = new SPacketRespawn(GameMode.getFromId((Integer) nmsPacket.e().getClass().getMethod("getId", EnumGamemode.class).invoke(nmsPacket.e())));
             data.getPacketOutProcessor().processPacket(loniaRespawnPacket);
             return;
 
@@ -186,10 +188,10 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
-        if (packet instanceof ClientboundLevelChunkWithLightPacket) {
+        if (packet instanceof PacketPlayOutMapChunk) {
 
-            ClientboundLevelChunkWithLightPacket nmsPacket = (ClientboundLevelChunkWithLightPacket) packet;
-            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk(nmsPacket.b(), nmsPacket.c());
+            PacketPlayOutMapChunk nmsPacket = (PacketPlayOutMapChunk) packet;
+            SPacketLevelChunk loniaLevelChunkPacket = new SPacketLevelChunk(nmsPacket.c(), nmsPacket.d());
             data.getPacketOutProcessor().processPacket(loniaLevelChunkPacket);
             return;
 
@@ -291,7 +293,7 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayInAbilities) {
 
             PacketPlayInAbilities nmsPacket = (PacketPlayInAbilities) packet;
-            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities(nmsPacket.b());
+            CPacketAbilities loniaAbilitiesPacket = new CPacketAbilities((Boolean) nmsPacket.getClass().getMethod("isFlying").invoke(nmsPacket));
             data.getPacketInProcessor().processPacket(loniaAbilitiesPacket);
             return;
 

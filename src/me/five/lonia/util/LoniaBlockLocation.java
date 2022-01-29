@@ -3,6 +3,7 @@ package me.five.lonia.util;
 import me.five.lonia.Lonia;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 public class LoniaBlockLocation {
 
@@ -24,9 +25,9 @@ public class LoniaBlockLocation {
         this.world = world;
     }
 
-    public Material getType() {
+    public Material getType(Player player) {
         if (world == null) return Material.AIR;
-        return Lonia.getInstance().getNMSManager().getBlockType(blockX, blockY, blockZ, world);
+        return Lonia.getInstance().getNMSManager().getBlockType(blockX, blockY, blockZ, player);
     }
 
     public int getBlockX() {
