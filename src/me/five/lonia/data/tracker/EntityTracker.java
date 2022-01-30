@@ -1,7 +1,9 @@
 package me.five.lonia.data.tracker;
 
+import me.five.lonia.Lonia;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.VectorLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
 import java.util.*;
@@ -19,8 +21,12 @@ public class EntityTracker {
         this.clientLocations = new ArrayList<>();
         this.pendingLocations = new HashMap<>();
         this.entityId = entityId;
-        this.entity = data.getPlayer().getWorld().getEntities().stream().filter(e -> e.getEntityId() == entityId).findFirst().orElse(null);
-        if (entity == null) return;
+        Bukkit.getScheduler().runTask(Lonia.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                EntityTracker.this.entity = data.getPlayer().getWorld().getEntities().stream().filter(e -> e.getEntityId() == entityId).findFirst().orElse(null);
+            }
+        });
         this.serverLocation = currentLocation;
         while (clientLocations.size() < 20) {
             clientLocations.add(currentLocation);

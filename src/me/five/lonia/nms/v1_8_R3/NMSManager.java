@@ -2,11 +2,11 @@ package me.five.lonia.nms.v1_8_R3;
 
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ServerVersion;
-import net.minecraft.server.v1_8_R3.PacketPlayOutTransaction;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -23,7 +23,12 @@ public class NMSManager extends me.five.lonia.nms.NMSManager {
 
     @Override
     public Material getBlockType(int blockX, int blockY, int blockZ, Player player) {
-        return null;
+        WorldServer nmsWorld = ((CraftPlayer)player).getHandle().getWorld().getWorldData().world;
+        BlockPosition blockPosition = new BlockPosition(blockX, blockY, blockZ);
+        if (nmsWorld.isLoaded(blockPosition)) {
+            return CraftMagicNumbers.getMaterial(nmsWorld.getType(blockPosition).getBlock());
+        }
+        return Material.AIR;
     }
 
     @Override

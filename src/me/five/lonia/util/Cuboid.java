@@ -47,24 +47,26 @@ public class Cuboid {
     public boolean checkBlocks(Player bukkitPlayer, Collection<Material> types) {
 
         int x = (int) Math.floor(x1);
-        int y = (int) Math.floor(y1);
-        int z = (int) Math.floor(z1);
         int maxX = (int) Math.ceil(x2);
-        int maxY = (int) Math.ceil(y2);
-        int maxZ = (int) Math.ceil(z2);
 
         while (x < maxX) {
 
+            int y = (int) Math.floor(y1);
+            int maxY = (int) Math.ceil(y2);
+
             while (y < maxY) {
+
+                int z = (int) Math.floor(z1);
+                int maxZ = (int) Math.ceil(z2);
 
                 while (z < maxZ) {
                     LoniaBlockLocation blockLoc = new LoniaBlockLocation(x, y, z);
                     if (types.contains(blockLoc.getType(bukkitPlayer))) return true;
-                    z++;
+                    ++z;
                 }
-                y++;
+                ++y;
             }
-            x++;
+            ++x;
         }
 
         return false;
@@ -74,24 +76,26 @@ public class Cuboid {
     public boolean checkBlocksExcept(Player bukkitPlayer, Collection<Material> types) {
 
         int x = (int) Math.floor(x1);
-        int y = (int) Math.floor(y1);
-        int z = (int) Math.floor(z1);
         int maxX = (int) Math.ceil(x2);
-        int maxY = (int) Math.ceil(y2);
-        int maxZ = (int) Math.ceil(z2);
 
         while (x < maxX) {
 
+            int y = (int) Math.floor(y1);
+            int maxY = (int) Math.ceil(y2);
+
             while (y < maxY) {
+
+                int z = (int) Math.floor(z1);
+                int maxZ = (int) Math.ceil(z2);
 
                 while (z < maxZ) {
                     LoniaBlockLocation blockLoc = new LoniaBlockLocation(x, y, z);
                     if (!types.contains(blockLoc.getType(bukkitPlayer))) return true;
-                    z++;
+                    ++z;
                 }
-                y++;
+                ++y;
             }
-            x++;
+            ++x;
         }
 
         return false;

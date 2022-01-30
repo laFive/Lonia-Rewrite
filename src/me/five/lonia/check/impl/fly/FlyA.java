@@ -10,10 +10,11 @@ import org.bukkit.Bukkit;
 
 public class FlyA extends Check {
 
+    private double threshold;
     private double lastMotionY;
 
     public FlyA() {
-        super("Fly", "A", 0, 20, true);
+        super("Fly", "A", 8, 20, true);
     }
 
     @Override
@@ -28,7 +29,7 @@ public class FlyA extends Check {
             if (getData().isTeleporting() || getData().isFlying() || getData().isRidingEntity()
                     || getData().getTickerMap().getOrDefault(Ticker.WORLD_LOADED, 0) < 200
                     || getData().getTickerMap().getOrDefault(Ticker.VELOCITY, 0) > 0
-                   // || getData().getTickerMap().getOrDefault(Ticker.UNDER_BLOCK, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.UNDER_BLOCK, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.ABNORMAL_VELOCITY, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.DISMOUNT_TICKS, 0) > 0
                     || getData().getActiveEffects().containsKey(EntityEffectType.LEVITATION)
@@ -47,30 +48,29 @@ public class FlyA extends Check {
             if (getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_17) && getData().getLocation().positionEquals(getData().getLastLocation())) return;
 
             double predictedMotionY = (lastMotionY - 0.08D) * 0.9800000190734863D;
-            double difference = Math.abs(motionY - predictedMotionY);
 
             /*
              * Client motion is clamped at 0.005 for 1.8, 0.003
              * for 1.9+
              */
-            if (Math.abs(predictedMotionY) < 0.005) return;
+            double motionClamp = getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_9) ? 0.003 : 0.005;
+            if (Math.abs(predictedMotionY) < motionClamp) predictedMotionY = 0;
+            double difference = Math.abs(motionY - predictedMotionY);
+            double maxDifference = getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_9) ? 3E-2 : 1E-4;
 
             /*
-             * We do this to compensate for 0.03, particularly for when building up.
-             * If the motion is predicted to be greater than 0 but the actual motion
-             * is less than 0, this could be as a result of 0.03. The impact of this
-             * on detection is minimal.
+             * This fixes 0.03 when onGround true doesn't get sent
+             * usually happens when building up
              */
-            if (predictedMotionY > 0 && motionY < 0 && Math.abs(motionY) < 0.1) {
-                return;
-            }
+            if (predictedMotionY > 0 && motionY < 0 && Math.abs(motionY) < 0.1) return;
 
-            if (difference > 1E-4) {
+            if (difference > maxDifference && ++threshold > 3) {
                 flag(1, "MotionY:" + motionY + " LastMotionY:" + lastMotionY + " Prediction:" + predictedMotionY + " Difference:" + difference + " PosY:" + getData().getLocation().getPosY() + " Version:" + getData().getClientVersion().toString());
                 return;
             }
 
             pass(0.005);
+            threshold = Math.max(0, threshold - 0.2);
 
         }
 

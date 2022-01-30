@@ -80,29 +80,29 @@ public class PacketInProcessor {
             }
 
             playerData.setLastBoundingBox(playerData.getBoundingBox());
-            Cuboid boundingBox = new Cuboid(playerLocation.getPosX() - (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer())) / 2,
-                    playerLocation.getPosX() + (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer())) / 2,
+            Cuboid boundingBox = new Cuboid(playerLocation.getPosX() - (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer()) / 2),
+                    playerLocation.getPosX() + (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer()) / 2),
                     playerLocation.getPosY(), playerLocation.getPosY() + Lonia.getInstance().getNMSManager().getEntityHeight(playerData.getPlayer()),
-                    playerLocation.getPosZ() - (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer())) / 2,
-                    playerLocation.getPosZ() + (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer())) / 2);
+                    playerLocation.getPosZ() - (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer()) / 2),
+                    playerLocation.getPosZ() + (Lonia.getInstance().getNMSManager().getEntityWidth(playerData.getPlayer()) / 2));
             playerData.setBoundingBox(boundingBox);
 
-            if (boundingBox.checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getAbnormalVelocityBlocks())) {
-                playerData.getTickerMap().put(Ticker.ABNORMAL_VELOCITY, 2);
+            if (boundingBox.modify(0, 0, -1, 0, 0, 0).checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getAbnormalVelocityBlocks())) {
+                playerData.getTickerMap().put(Ticker.ABNORMAL_VELOCITY, 3);
             }
-            if (boundingBox.checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getStairBlocks())) {
+            if (boundingBox.modify(0, 0, -1, 0, 0, 0).checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getStairBlocks())) {
                 playerData.getTickerMap().put(Ticker.STAIRS, 4);
             }
-            if (boundingBox.checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getSlabBlocks())) {
+            if (boundingBox.modify(0, 0, -1, 0, 0, 0).checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getSlabBlocks())) {
                 playerData.getTickerMap().put(Ticker.SLABS, 4);
             }
-            if (boundingBox.checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getLaunchBlocks())) {
+            if (boundingBox.modify(0, 0, -1, 0, 0, 0).checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getLaunchBlocks())) {
                 playerData.getTickerMap().put(Ticker.LAUNCH_BLOCK, 100);
             }
-            if (boundingBox.checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getSlippyBlocks())) {
+            if (boundingBox.modify(0, 0, -1, 0, 0, 0).checkBlocks(playerData.getPlayer(), Lonia.getInstance().getBlockManager().getSlippyBlocks())) {
                 playerData.getTickerMap().put(Ticker.SLIPPY_BLOCK, 30);
             }
-            if (boundingBox.modify(-0.3, 0.3, 1.8, 3.8, -0.3, 0.3).checkBlocksExcept(playerData.getPlayer(), Arrays.asList(Material.AIR))) {
+            if (boundingBox.modify(0, 0, 1.8, 3.8, 0, 0).checkBlocksExcept(playerData.getPlayer(), Arrays.asList(Material.AIR))) {
                 playerData.getTickerMap().put(Ticker.UNDER_BLOCK, 5);
             }
 
