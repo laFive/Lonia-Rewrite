@@ -10,7 +10,6 @@ public class CPacketBlockPlace extends LoniaPacket {
     private PlayerHand hand;
     private LoniaBlockLocation blockPos;
     private int placeDirection;
-    private ItemStack stack;
     private float facingX;
     private float facingY;
     private float facingZ;
@@ -19,11 +18,10 @@ public class CPacketBlockPlace extends LoniaPacket {
         this.hand = hand;
     }
 
-    public CPacketBlockPlace(PlayerHand hand, LoniaBlockLocation blockPos, int placeDirection, ItemStack stack, float facingX, float facingY, float facingZ) {
+    public CPacketBlockPlace(PlayerHand hand, LoniaBlockLocation blockPos, int placeDirection, float facingX, float facingY, float facingZ) {
         this.hand = hand;
         this.blockPos = blockPos;
         this.placeDirection = placeDirection;
-        this.stack = stack;
         this.facingX = facingX;
         this.facingY = facingY;
         this.facingZ = facingZ;
@@ -35,10 +33,6 @@ public class CPacketBlockPlace extends LoniaPacket {
 
     public int getPlaceDirection() {
         return placeDirection;
-    }
-
-    public ItemStack getStack() {
-        return stack;
     }
 
     public float getFacingX() {

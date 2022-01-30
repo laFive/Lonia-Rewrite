@@ -19,6 +19,7 @@ public class BukkitListener implements Listener {
             return;
         }
         Lonia.getInstance().getNMSManager().addPacketListener(playerData);
+        Lonia.getInstance().getCheckManager().addChecksToData(playerData);
     }
 
     @EventHandler

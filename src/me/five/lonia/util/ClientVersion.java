@@ -45,11 +45,11 @@ public enum ClientVersion {
     }
 
     public boolean isNewerOrEqual(ClientVersion otherVer) {
-        return otherVer.getVersionNumber() >= versionNumber;
+        return versionNumber >= otherVer.getVersionNumber();
     }
 
     public boolean isOlderOrEqual(ClientVersion otherVer) {
-        return otherVer.getVersionNumber() <= versionNumber;
+        return versionNumber <= otherVer.getVersionNumber();
     }
 
     public static ClientVersion getFromVersionNumber(int pn) {

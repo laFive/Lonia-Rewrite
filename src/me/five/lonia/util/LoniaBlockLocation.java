@@ -10,7 +10,6 @@ public class LoniaBlockLocation {
     private int blockX;
     private int blockY;
     private int blockZ;
-    private World world;
 
     public LoniaBlockLocation(int blockX, int blockY, int blockZ) {
         this.blockX = blockX;
@@ -18,15 +17,8 @@ public class LoniaBlockLocation {
         this.blockZ = blockZ;
     }
 
-    public LoniaBlockLocation(int blockX, int blockY, int blockZ, World world) {
-        this.blockX = blockX;
-        this.blockY = blockY;
-        this.blockZ = blockZ;
-        this.world = world;
-    }
 
     public Material getType(Player player) {
-        if (world == null) return Material.AIR;
         return Lonia.getInstance().getNMSManager().getBlockType(blockX, blockY, blockZ, player);
     }
 

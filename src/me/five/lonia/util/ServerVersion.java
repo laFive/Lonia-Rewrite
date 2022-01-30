@@ -6,9 +6,11 @@ public enum ServerVersion {
 
     v1_7_R4(5),
     v1_8_R3(47),
+    v1_9_R1(107),
     v1_9_R2(110),
     v1_10_R1(210),
     v1_11_R1(316),
+    v1_13_R1(393),
     v1_13_R2(404),
     v1_14_R1(498),
     v1_15_R1(404),
@@ -18,16 +20,16 @@ public enum ServerVersion {
 
     private int versionNumber;
 
-    private int getVersionNumber() {
+    public int getVersionNumber() {
         return versionNumber;
     }
 
-    public boolean isNewer(ServerVersion otherVer) {
-        return otherVer.getVersionNumber() > versionNumber;
+    public boolean isNewerOrEqual(ServerVersion otherVer) {
+        return versionNumber >= otherVer.getVersionNumber();
     }
 
-    public boolean isOlder(ServerVersion otherVer) {
-        return otherVer.getVersionNumber() < versionNumber;
+    public boolean isOlderOrEqual(ServerVersion otherVer) {
+        return versionNumber <= otherVer.getVersionNumber();
     }
 
     public static ServerVersion getFromVersionNumber(int pn) {

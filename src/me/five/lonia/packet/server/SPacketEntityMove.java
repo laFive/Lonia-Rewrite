@@ -71,11 +71,11 @@ public class SPacketEntityMove extends LoniaPacket {
         return onGround;
     }
 
-    public boolean isHasRot() {
+    public boolean hasRot() {
         return hasRot;
     }
 
-    public boolean isHasPos() {
+    public boolean hasPos() {
         return hasPos;
     }
 

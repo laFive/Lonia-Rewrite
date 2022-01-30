@@ -1,0 +1,13 @@
+Lonia:
+  Name: Lonia
+  Color: '&6'
+  Autobans: true
+  Ban-Command: /ban %player% Cheating
+  Debug-Mode: false
+Checks:
+  Fly-A:
+    enabled: true
+    autoban: true
+data:
+  toggled-player-alerts: []
+  exempt-players: []

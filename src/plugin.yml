@@ -4,3 +4,5 @@ api-version: 1.13
 description: Advanced asynchronous anticheat solution
 main: me.five.lonia.Lonia
 author: five
+commands:
+  alerts:
