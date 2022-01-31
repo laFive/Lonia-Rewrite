@@ -73,4 +73,7 @@ public class EntityTracker {
 
     }
 
+    public Entity getEntity() {
+        return entity;
+    }
 }

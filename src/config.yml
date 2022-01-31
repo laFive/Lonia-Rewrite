@@ -8,6 +8,9 @@ Checks:
   Fly-A:
     enabled: true
     autoban: true
+  NoFall-A:
+    enabled: true
+    autoban: true
 data:
   toggled-player-alerts: []
   exempt-players: []

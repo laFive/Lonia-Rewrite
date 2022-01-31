@@ -9,6 +9,7 @@ import me.five.lonia.util.EntityEffectData;
 import me.five.lonia.util.LoniaAbilities;
 import me.five.lonia.util.Teleport;
 import me.five.lonia.util.Ticker;
+import net.minecraft.network.protocol.Packet;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class PacketOutProcessor {
 
             SPacketEntityVelocity velocity = (SPacketEntityVelocity) packet;
             if (velocity.getEntityId() != playerData.getPlayer().getEntityId()) return;
-            int velocityTicks = (int) ((Math.abs(velocity.getVelocityX() + Math.abs(velocity.getVelocityY()) + Math.abs(velocity.getVelocityZ())) / 2 + 2) * 13);
+            int velocityTicks = (int) ((Math.abs(velocity.getVelocityX() + Math.abs(velocity.getVelocityY()) + Math.abs(velocity.getVelocityZ())) / 2 + 2) * 7);
             VelocityTransaction velocityTransaction = new VelocityTransaction(playerData.getTickNumber(), velocityTicks);
             playerData.getTransactionManager().addTransaction(velocityTransaction);
             playerData.getTickerMap().put(Ticker.VELOCITY, playerData.getPingTicks() + 1);

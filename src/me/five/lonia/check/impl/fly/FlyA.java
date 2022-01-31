@@ -6,11 +6,9 @@ import me.five.lonia.packet.client.CPacketFlying;
 import me.five.lonia.util.ClientVersion;
 import me.five.lonia.util.EntityEffectType;
 import me.five.lonia.util.Ticker;
-import org.bukkit.Bukkit;
 
 public class FlyA extends Check {
 
-    private double threshold;
     private double lastMotionY;
 
     public FlyA() {
@@ -56,7 +54,6 @@ public class FlyA extends Check {
             double motionClamp = getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_9) ? 0.003 : 0.005;
             if (Math.abs(predictedMotionY) < motionClamp) predictedMotionY = 0;
             double difference = Math.abs(motionY - predictedMotionY);
-            double maxDifference = getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_9) ? 3E-2 : 1E-4;
 
             /*
              * This fixes 0.03 when onGround true doesn't get sent
@@ -64,13 +61,12 @@ public class FlyA extends Check {
              */
             if (predictedMotionY > 0 && motionY < 0 && Math.abs(motionY) < 0.1) return;
 
-            if (difference > maxDifference && ++threshold > 3) {
+            if (difference > 3E-2) {
                 flag(1, "MotionY:" + motionY + " LastMotionY:" + lastMotionY + " Prediction:" + predictedMotionY + " Difference:" + difference + " PosY:" + getData().getLocation().getPosY() + " Version:" + getData().getClientVersion().toString());
                 return;
             }
 
             pass(0.005);
-            threshold = Math.max(0, threshold - 0.2);
 
         }
 

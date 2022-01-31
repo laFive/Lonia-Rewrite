@@ -39,6 +39,8 @@ public class PlayerData {
     private Map<Long, Long> keepAliveMap;
     private long keepAlivePing;
     private List<Check> loadedChecks;
+    private int groundTicks;
+    private int airTicks;
 
     public PlayerData(Player player, int versionNumber) {
         this.player = player;
@@ -173,6 +175,22 @@ public class PlayerData {
 
     public void setBoundingBox(Cuboid boundingBox) {
         this.boundingBox = boundingBox;
+    }
+
+    public int getGroundTicks() {
+        return groundTicks;
+    }
+
+    public void setGroundTicks(int groundTicks) {
+        this.groundTicks = groundTicks;
+    }
+
+    public int getAirTicks() {
+        return airTicks;
+    }
+
+    public void setAirTicks(int airTicks) {
+        this.airTicks = airTicks;
     }
 
     public boolean isBanned() {

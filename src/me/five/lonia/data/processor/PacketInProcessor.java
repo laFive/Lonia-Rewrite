@@ -40,6 +40,7 @@ public class PacketInProcessor {
             CPacketAbilities abilities = (CPacketAbilities) packet;
             if (playerData.getLoniaAbilities().isAllowFlying()) {
 
+                if (playerData.getLoniaAbilities().isFlying() && !abilities.isFlying()) playerData.getTickerMap().put(Ticker.ABILITIES, 70);
                 playerData.getLoniaAbilities().setFlying(abilities.isFlying());
                 if (!abilities.onlyContainsFlying()) {
 
@@ -69,6 +70,12 @@ public class PacketInProcessor {
                 playerLocation.setYaw(flying.getYaw());
                 playerLocation.setPitch(flying.getPitch());
             }
+            if (playerLocation.isOnGround() != flying.isOnGround()) {
+                playerData.setAirTicks(0);
+                playerData.setGroundTicks(0);
+            }
+            if (flying.isOnGround()) playerData.setGroundTicks(playerData.getGroundTicks() + 1);
+            if (!flying.isOnGround()) playerData.setAirTicks(playerData.getAirTicks() + 1);
             playerLocation.setOnGround(flying.isOnGround());
             playerData.setLocation(playerLocation);
 
