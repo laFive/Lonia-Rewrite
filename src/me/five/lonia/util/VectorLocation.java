@@ -1,5 +1,8 @@
 package me.five.lonia.util;
 
+import me.five.lonia.Lonia;
+import org.bukkit.entity.Entity;
+
 public class VectorLocation {
 
     private double x;
@@ -10,6 +13,14 @@ public class VectorLocation {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Cuboid toBoundingBox(Entity entity) {
+
+        double height = Lonia.getInstance().getNMSManager().getEntityHeight(entity);
+        double width = Lonia.getInstance().getNMSManager().getEntityWidth(entity);
+        return new Cuboid(x - width / 2, x + width / 2, y, y + height, z - width / 2, z + width / 2);
+
     }
 
     public double getX() {

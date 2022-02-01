@@ -29,7 +29,6 @@ public class FlyA extends Check {
                     || getData().getTickerMap().getOrDefault(Ticker.VELOCITY, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.UNDER_BLOCK, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.ABNORMAL_VELOCITY, 0) > 0
-                    || getData().getTickerMap().getOrDefault(Ticker.DISMOUNT_TICKS, 0) > 0
                     || getData().getActiveEffects().containsKey(EntityEffectType.LEVITATION)
                     || getData().getActiveEffects().containsKey(EntityEffectType.SLOW_FALLING)
                     || getData().getTickerMap().getOrDefault(Ticker.RIPTIDE, 0) > 0

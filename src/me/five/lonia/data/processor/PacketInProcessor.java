@@ -133,7 +133,6 @@ public class PacketInProcessor {
                 Teleport tp = teleportIterator.next();
                 if (tp.locationEquals(playerLocation)) {
                     teleportIterator.remove();
-                    Bukkit.broadcastMessage("removed! " + playerData.getTeleportList().size());
                     playerData.getTickerMap().put(Ticker.TELEPORT, 5);
                 }
             }

@@ -50,7 +50,7 @@ public class Check {
 
     public void flag(double count, String verbose) {
         this.enabled = Lonia.getInstance().getLoniaConfig().isCheckEnabled(type, subType);
-        this.autoban = Lonia.getInstance().getLoniaConfig().isCheckAutoban(type, subType);
+        boolean autobanEnabled = this.autoban && Lonia.getInstance().getLoniaConfig().isCheckAutoban(type, subType);
         if (!enabled) return;
         if (Lonia.getInstance().getLoniaConfig().isPlayerExempt(data.getPlayer().getUniqueId())) return;
         violationLevel += count;
@@ -73,7 +73,7 @@ public class Check {
             }
         }
         if (violationLevel >= minBanVl && !data.isBanned()) {
-            if (!autoban) return;
+            if (!autobanEnabled) return;
             if (!Lonia.getInstance().getLoniaConfig().isAutobans()) return;
             data.setBanned(true);
             Bukkit.getScheduler().runTask(Lonia.getInstance(), new Runnable() {
@@ -119,6 +119,14 @@ public class Check {
 
     public PlayerData getData() {
         return data;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSubType() {
+        return subType;
     }
 
     public EnumCheckVersions getCheckVersions() {

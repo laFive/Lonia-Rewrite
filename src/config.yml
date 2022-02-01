@@ -8,7 +8,16 @@ Checks:
   Fly-A:
     enabled: true
     autoban: true
-  NoFall-A:
+  Fly-B:
+    enabled: true
+    autoban: true
+  Fly-C:
+    enabled: true
+    autoban: true
+  Fly-D:
+    enabled: true
+    autoban: true
+  Fly-E:
     enabled: true
     autoban: true
 data:

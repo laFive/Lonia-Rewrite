@@ -1,16 +1,16 @@
-package me.five.lonia.check.impl.nofall;
+package me.five.lonia.check.impl.fly;
 
 import me.five.lonia.check.Check;
 import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.packet.client.CPacketFlying;
 import me.five.lonia.util.Ticker;
 
-public class NoFallA extends Check {
+public class FlyE extends Check {
 
     private double lastMotionY;
 
-    public NoFallA() {
-        super("NoFall", "A", 0, 4, true);
+    public FlyE() {
+        super("Fly", "E", 0, 6, true);
     }
 
     @Override
@@ -29,7 +29,6 @@ public class NoFallA extends Check {
                         || getData().getTickerMap().getOrDefault(Ticker.WORLD_LOADED, 0) < 200
                         || getData().getTickerMap().getOrDefault(Ticker.RIPTIDE, 0) > 0
                         || getData().getTickerMap().getOrDefault(Ticker.GLIDING, 0) > 0
-                        || getData().getTickerMap().getOrDefault(Ticker.DISMOUNT_TICKS, 0) > 0
                         || getData().getTickerMap().getOrDefault(Ticker.ABNORMAL_VELOCITY, 0) > 0) {
                     return;
                 }

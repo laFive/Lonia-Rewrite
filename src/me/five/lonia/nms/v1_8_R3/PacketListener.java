@@ -8,6 +8,7 @@ import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.util.*;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -530,7 +531,7 @@ public class PacketListener extends ChannelDuplexHandler {
                 int entityId = entityIdField.getInt(nmsPacket);
                 UseEntityAction action = UseEntityAction.values()[nmsPacket.a().ordinal()];
                 CPacketUseEntity loniaUseEntityPacket = new CPacketUseEntity(entityId, action);
-                data.getPacketOutProcessor().processPacket(loniaUseEntityPacket);
+                data.getPacketInProcessor().processPacket(loniaUseEntityPacket);
                 return;
 
             }
@@ -539,7 +540,7 @@ public class PacketListener extends ChannelDuplexHandler {
 
                 PacketPlayInBlockPlace nmsPacket = (PacketPlayInBlockPlace) packet;
                 CPacketBlockPlace loniaBlockPlacePacket = new CPacketBlockPlace(PlayerHand.MAIN, new LoniaBlockLocation(nmsPacket.a().getX(), nmsPacket.a().getY(), nmsPacket.a().getZ()), nmsPacket.getFace(), nmsPacket.d(), nmsPacket.e(), nmsPacket.f());
-                data.getPacketOutProcessor().processPacket(loniaBlockPlacePacket);
+                data.getPacketInProcessor().processPacket(loniaBlockPlacePacket);
                 return;
 
             }

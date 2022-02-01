@@ -129,6 +129,10 @@ public class PlayerData {
         return ridingEntity;
     }
 
+    public long getMaxPing() {
+        return Math.max(Math.max(averageTransactionPing, transactionPing), lastTransactionPing);
+    }
+
     public boolean isRidingEntityServer() {
         return ridingEntity;
     }

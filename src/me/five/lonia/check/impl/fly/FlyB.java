@@ -25,12 +25,7 @@ public class FlyB extends Check {
                 for (EntityTracker tracker : getData().getEntityTrackerManager().getTrackers()) {
                     for (VectorLocation entityLocation : tracker.getRecentLocations(3)) {
                         if (tracker.getEntity() == null) return;
-                        Cuboid entityBB = new Cuboid(entityLocation.getX() - Lonia.getInstance().getNMSManager().getEntityWidth(tracker.getEntity()) / 2,
-                                entityLocation.getX() + Lonia.getInstance().getNMSManager().getEntityWidth(tracker.getEntity()) / 2,
-                                entityLocation.getY(),
-                                entityLocation.getY() + Lonia.getInstance().getNMSManager().getEntityHeight(tracker.getEntity()),
-                                entityLocation.getZ() - Lonia.getInstance().getNMSManager().getEntityWidth(tracker.getEntity()) / 2,
-                                entityLocation.getZ() + Lonia.getInstance().getNMSManager().getEntityWidth(tracker.getEntity()) / 2);
+                        Cuboid entityBB = entityLocation.toBoundingBox(tracker.getEntity());
                         if ((tracker.getEntity().getType().name().equals("BOAT") || tracker.getEntity().getType().name().equals("SHULKER")) && entityBB.intersectsWith(getData().getBoundingBox().expand(0, 0.1, 0))) {
                             return;
                         }

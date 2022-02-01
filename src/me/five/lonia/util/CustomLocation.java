@@ -1,5 +1,8 @@
 package me.five.lonia.util;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
 public class CustomLocation {
 
     private double posX;
@@ -69,9 +72,15 @@ public class CustomLocation {
     }
 
     public boolean positionEquals(CustomLocation loc2) {
-
         return posX == loc2.getPosX() && posY == loc2.getPosY() && posZ == loc2.getPosZ();
+    }
 
+    public VectorLocation toVectorLocation() {
+        return new VectorLocation(posX, posY, posZ);
+    }
+
+    public Location toBukkitLocation(World world) {
+        return new Location(world, posX, posY, posZ, yaw, pitch);
     }
 
 }

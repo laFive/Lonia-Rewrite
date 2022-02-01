@@ -5,10 +5,7 @@ import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.transaction.*;
-import me.five.lonia.util.EntityEffectData;
-import me.five.lonia.util.LoniaAbilities;
-import me.five.lonia.util.Teleport;
-import me.five.lonia.util.Ticker;
+import me.five.lonia.util.*;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.Bukkit;
 
@@ -155,6 +152,10 @@ public class PacketOutProcessor {
 
             playerData.getEntityTrackerManager().clearTrackers();
             playerData.getTickerMap().put(Ticker.WORLD_LOADED, 0);
+            if (((SPacketRespawn) packet).getGameMode().equals(GameMode.CREATIVE)
+                    || ((SPacketRespawn) packet).getGameMode().equals(GameMode.SPECTATOR)) {
+                playerData.getLoniaAbilities().setAllowFlying(true);
+            }
 
         }
 
