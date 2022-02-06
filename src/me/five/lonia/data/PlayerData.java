@@ -43,6 +43,7 @@ public class PlayerData {
     private int airTicks;
     private boolean usingItem;
     private int foodLevel;
+    private int itemSlot;
 
     public PlayerData(Player player, int versionNumber) {
         this.player = player;
@@ -150,6 +151,14 @@ public class PlayerData {
 
     public void setFoodLevel(int foodLevel) {
         this.foodLevel = foodLevel;
+    }
+
+    public int getItemSlot() {
+        return itemSlot;
+    }
+
+    public void setItemSlot(int itemSlot) {
+        this.itemSlot = itemSlot;
     }
 
     public boolean isRidingEntityServer() {

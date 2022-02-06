@@ -8,7 +8,7 @@ import me.five.lonia.util.Ticker;
 public class KillAuraF extends Check {
 
     public KillAuraF() {
-        super("KillAura", "F", 0, 5, true);
+        super("KillAura", "F", 0, 6, true);
     }
 
     @Override

@@ -57,30 +57,36 @@ public class PacketInProcessor {
 
             CPacketBlockPlace blockPlace = (CPacketBlockPlace) packet;
 
-            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(0);
-            if (heldItem == null || heldItem.getType().equals(Material.AIR) || !MinecraftUtil.isUseItem(blockPlace.getBlockPos())) return;
-            if (heldItem.getType().isEdible() || heldItem.getType().name().contains("SWORD")) {
-                if (heldItem.getType().isEdible() && playerData.getPlayer().getFoodLevel() >= 20) return;
-                playerData.setUsingItem(true);
-                playerData.getTickerMap().put(Ticker.USE_ITEM, 8);
+            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(playerData.getItemSlot());
+            if (heldItem != null && MinecraftUtil.isUseItem(blockPlace.getBlockPos())) {
+                if (Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType())
+                        || Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {
+                    if (Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType()) && playerData.getFoodLevel() >= 20) {
+                        playerData.setUsingItem(true);
+                        playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
+                    } else if (Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {
+                        playerData.setUsingItem(true);
+                        playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
+                    }
+                }
             }
 
         }
 
         if (packet instanceof CPacketUseItem) {
 
-            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(0);
-            if (heldItem == null || heldItem.getType().equals(Material.AIR)) return;
-            if (heldItem.getType().isEdible() || heldItem.getType().name().contains("SWORD")) {
-                if (heldItem.getType().isEdible() && playerData.getPlayer().getFoodLevel() >= 20) return;
+            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(playerData.getItemSlot());
+            if (heldItem != null && Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType()) && playerData.getFoodLevel() >= 20) {
                 playerData.setUsingItem(true);
-                playerData.getTickerMap().put(Ticker.USE_ITEM, 8);
+                playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
             }
 
         }
 
         if (packet instanceof CPacketSetHeldItemSlot) {
 
+            CPacketSetHeldItemSlot heldItemPacket = (CPacketSetHeldItemSlot) packet;
+            playerData.setItemSlot(heldItemPacket.getSlot());
             playerData.setUsingItem(false);
 
         }
@@ -88,8 +94,7 @@ public class PacketInProcessor {
         if (packet instanceof CPacketBlockDig) {
 
             CPacketBlockDig blockDigPacket = (CPacketBlockDig) packet;
-            if (!blockDigPacket.getAction().equals(PlayerDigAction.RELEASE_USE_ITEM)) return;
-            playerData.setUsingItem(false);
+            if (blockDigPacket.getAction().equals(PlayerDigAction.RELEASE_USE_ITEM)) playerData.setUsingItem(false);
 
         }
 
