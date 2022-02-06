@@ -16,6 +16,7 @@ public enum Ticker {
     UNDER_BLOCK,
     GLIDING,
     RIPTIDE,
-    USE_ITEM;
+    USE_ITEM,
+    VELOCITY_TICK;
 
 }
