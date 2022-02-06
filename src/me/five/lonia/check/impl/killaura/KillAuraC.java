@@ -5,15 +5,18 @@ import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.packet.client.CPacketFlying;
 import me.five.lonia.packet.client.CPacketUseEntity;
 import me.five.lonia.util.ClientVersion;
+import org.bukkit.entity.Entity;
 
 public class KillAuraC extends Check {
 
     private long lastFlying;
     private boolean flagged;
     private boolean sent;
+    private int attackedEntity;
 
     public KillAuraC() {
         super("KillAura", "C", 0, 5, true);
+        setDescription("Checks for multiple attacks within the same tick (MultiAura)");
     }
 
     @Override
@@ -38,8 +41,10 @@ public class KillAuraC extends Check {
         }
 
         if (packet instanceof CPacketUseEntity) {
-            if (sent) flagged = true;
+            CPacketUseEntity useEntityPacket = (CPacketUseEntity) packet;
+            if (sent && attackedEntity != useEntityPacket.getEntityId()) flagged = true;
             sent = true;
+            attackedEntity = useEntityPacket.getEntityId();
         }
 
     }

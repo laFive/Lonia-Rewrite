@@ -12,6 +12,7 @@ public class ScaffoldA extends Check {
 
     public ScaffoldA() {
         super("Scaffold", "A", 0, 6, true);
+        setDescription("Checks for no slowdown when aiming (Scaffold/Autoblock)");
     }
 
     @Override
@@ -24,8 +25,6 @@ public class ScaffoldA extends Check {
 
         if (packet instanceof CPacketFlying) {
 
-            if (getData().getLocation().positionEquals(getData().getLastLocation())) return;
-
             placeTicks++;
             double diffX = getData().getLocation().getPosX() - getData().getLastLocation().getPosX();
             double diffZ = getData().getLocation().getPosZ() - getData().getLastLocation().getPosZ();
@@ -37,7 +36,7 @@ public class ScaffoldA extends Check {
             if (!getData().getLocation().isOnGround() || !((CPacketFlying) packet).hasLook() || getData().getLocation().positionEquals(getData().getLastLocation())) return;
             float differenceYaw = getData().getLocation().getYaw() - getData().getLastLocation().getYaw();
 
-            if (Math.abs(differenceYaw) > 2D && distance > 0.18 && Math.abs(distance - lastDistance) < 0.00005) {
+            if (Math.abs(differenceYaw) > 5D && distance > 0.26 && Math.abs(distance - lastDistance) < 0.00005) {
                 if (placeTicks < 7) flag(1, "YawDif:" + differenceYaw + " Distance:" + distance + " Acceleration:" + Math.abs(distance - lastDistance) + " LastDistance:" + lastDistance);
                 return;
             }

@@ -21,6 +21,7 @@ public class FlyD extends Check {
 
     public FlyD() {
         super("Fly", "D", 10, 0, false);
+        setDescription("Checks for block desync (Fly/NoFall/Ghost Blocks)");
     }
 
     @Override
@@ -41,7 +42,7 @@ public class FlyD extends Check {
 
             for (EntityTracker tracker : getData().getEntityTrackerManager().getTrackers()) {
                 for (VectorLocation entityLocation : tracker.getRecentLocations(3)) {
-                    if (tracker.getEntity() == null) return;
+                    if (tracker.getEntity() == null) continue;
                     Cuboid entityBB = entityLocation.toBoundingBox(tracker.getEntity());
                     if ((tracker.getEntity().getType().name().equals("BOAT") || tracker.getEntity().getType().name().equals("SHULKER")) && entityBB.intersectsWith(getData().getBoundingBox().expand(0, 0.1, 0))) {
                         return;

@@ -11,6 +11,7 @@ public class FlyE extends Check {
 
     public FlyE() {
         super("Fly", "E", 0, 6, true);
+        setDescription("Checks for invalid falling motion (NoFall/Fly)");
     }
 
     @Override

@@ -11,6 +11,7 @@ public class FlyC extends Check {
 
     public FlyC() {
         super("Fly", "C", 0, 8, true);
+        setDescription("Checks for impossible MotionY values (HighJump/Fly)");
     }
 
     @Override

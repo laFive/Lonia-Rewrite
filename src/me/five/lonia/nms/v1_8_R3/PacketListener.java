@@ -8,8 +8,6 @@ import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.util.*;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -27,7 +25,6 @@ public class PacketListener extends ChannelDuplexHandler {
 
         super.write(chc, packet, promise);
 
-        try {
             if (packet instanceof PacketPlayOutKeepAlive) {
 
                 PacketPlayOutKeepAlive nmsPacket = (PacketPlayOutKeepAlive) packet;
@@ -254,6 +251,17 @@ public class PacketListener extends ChannelDuplexHandler {
 
             }
 
+            if (packet instanceof PacketPlayOutUpdateHealth) {
+
+                PacketPlayOutUpdateHealth nmsPacket = (PacketPlayOutUpdateHealth) packet;
+                float health = (float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "a");
+                int food = (int) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "b");
+                float foodSaturation = (float) ReflectionUtil.getField(nmsPacket.getClass(), nmsPacket, "c");
+                data.getPacketOutProcessor().processPacket(new SPacketHealth(health, food, foodSaturation));
+                return;
+
+            }
+
             if (packet instanceof PacketPlayOutSpawnEntity) {
 
                 PacketPlayOutSpawnEntity nmsPacket = (PacketPlayOutSpawnEntity) packet;
@@ -419,9 +427,6 @@ public class PacketListener extends ChannelDuplexHandler {
                 return;
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
     }
 
@@ -430,7 +435,6 @@ public class PacketListener extends ChannelDuplexHandler {
 
         super.channelRead(chc, packet);
 
-        try {
             if (packet instanceof PacketPlayInFlying) {
 
                 PacketPlayInFlying nmsFlyingPacket = (PacketPlayInFlying) packet;
@@ -518,7 +522,7 @@ public class PacketListener extends ChannelDuplexHandler {
 
             if (packet instanceof PacketPlayInArmAnimation) {
 
-                data.getPacketInProcessor().processPacket(new SPacketArmAnimation(PlayerHand.MAIN));
+                data.getPacketInProcessor().processPacket(new CPacketArmAnimation(PlayerHand.MAIN));
                 return;
 
             }
@@ -601,9 +605,6 @@ public class PacketListener extends ChannelDuplexHandler {
                 return;
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
     }
 

@@ -1,14 +1,12 @@
 package me.five.lonia.check;
 
+import me.five.lonia.check.impl.badpackets.*;
 import me.five.lonia.check.impl.fly.FlyA;
 import me.five.lonia.check.impl.fly.FlyB;
 import me.five.lonia.check.impl.fly.FlyC;
 import me.five.lonia.check.impl.fly.FlyD;
 import me.five.lonia.check.impl.fly.FlyE;
-import me.five.lonia.check.impl.killaura.KillAuraA;
-import me.five.lonia.check.impl.killaura.KillAuraB;
-import me.five.lonia.check.impl.killaura.KillAuraC;
-import me.five.lonia.check.impl.killaura.KillAuraD;
+import me.five.lonia.check.impl.killaura.*;
 import me.five.lonia.check.impl.scaffold.ScaffoldA;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ClientVersion;
@@ -31,6 +29,13 @@ public class CheckManager {
         checks.add(new KillAuraB());
         checks.add(new KillAuraC());
         checks.add(new KillAuraD());
+        checks.add(new KillAuraE());
+        checks.add(new KillAuraF());
+        checks.add(new BadPacketsA());
+        checks.add(new BadPacketsB());
+        checks.add(new BadPacketsC());
+        checks.add(new BadPacketsD());
+        checks.add(new BadPacketsE());
         checks.add(new ScaffoldA());
         return checks;
     }

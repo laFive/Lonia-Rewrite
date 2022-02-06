@@ -13,6 +13,7 @@ public class FlyA extends Check {
 
     public FlyA() {
         super("Fly", "A", 8, 20, true);
+        setDescription("Checks for invalid MotionY (Fly/Speed/Criticals/Tower)");
     }
 
     @Override

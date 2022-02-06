@@ -8,10 +8,8 @@ import me.five.lonia.packet.client.*;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.util.*;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectList;
 import net.minecraft.world.level.EnumGamemode;
-import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 
@@ -215,6 +213,14 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
+        if (packet instanceof PacketPlayOutUpdateHealth) {
+
+            PacketPlayOutUpdateHealth nmsPacket = (PacketPlayOutUpdateHealth) packet;
+            data.getPacketOutProcessor().processPacket(new SPacketHealth(nmsPacket.b(), nmsPacket.c(), nmsPacket.d()));
+            return;
+
+        }
+
     }
 
     @Override
@@ -270,6 +276,14 @@ public class PacketListener extends ChannelDuplexHandler {
 
         }
 
+        if (packet instanceof PacketPlayInUseItem) {
+
+            PacketPlayInUseItem nmsPacket = (PacketPlayInUseItem) packet;
+            data.getPacketInProcessor().processPacket(new CPacketUseItem(PlayerHand.getFromId(nmsPacket.b().ordinal())));
+            return;
+
+        }
+
         if (packet instanceof ServerboundPongPacket) {
 
             ServerboundPongPacket nmsPacket = (ServerboundPongPacket) packet;
@@ -302,7 +316,7 @@ public class PacketListener extends ChannelDuplexHandler {
         if (packet instanceof PacketPlayInArmAnimation) {
 
             PacketPlayInArmAnimation nmsPacket = (PacketPlayInArmAnimation) packet;
-            data.getPacketInProcessor().processPacket(new SPacketArmAnimation(PlayerHand.getFromId(nmsPacket.b().ordinal())));
+            data.getPacketInProcessor().processPacket(new CPacketArmAnimation(PlayerHand.getFromId(nmsPacket.b().ordinal())));
             return;
 
         }

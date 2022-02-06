@@ -3,6 +3,7 @@ package me.five.lonia.data.processor;
 import me.five.lonia.Lonia;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.LoniaPacket;
+import me.five.lonia.packet.client.CPacketAbilities;
 import me.five.lonia.packet.server.*;
 import me.five.lonia.transaction.*;
 import me.five.lonia.util.*;
@@ -102,6 +103,7 @@ public class PacketOutProcessor {
             EntityEffectData effectData = new EntityEffectData(entityEffect.getEffectType(), entityEffect.getEffectTicks(), entityEffect.getEffectAmplifier());
             EffectTransaction effectTransaction = new EffectTransaction(playerData.getTickNumber(), effectData);
             playerData.getTransactionManager().addTransaction(effectTransaction);
+            playerData.setUsingItem(false);
 
         }
 
@@ -155,6 +157,16 @@ public class PacketOutProcessor {
             if (((SPacketRespawn) packet).getGameMode().equals(GameMode.CREATIVE)
                     || ((SPacketRespawn) packet).getGameMode().equals(GameMode.SPECTATOR)) {
                 playerData.getLoniaAbilities().setAllowFlying(true);
+            }
+
+        }
+
+        if (packet instanceof SPacketHealth) {
+
+            SPacketHealth healthPacket = (SPacketHealth) packet;
+            if (healthPacket.getFood() != playerData.getFoodLevel()) {
+                playerData.setFoodLevel(healthPacket.getFood());
+                playerData.setUsingItem(false);
             }
 
         }

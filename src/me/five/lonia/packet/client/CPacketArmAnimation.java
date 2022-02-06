@@ -1,13 +1,13 @@
-package me.five.lonia.packet.server;
+package me.five.lonia.packet.client;
 
 import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.util.PlayerHand;
 
-public class SPacketArmAnimation extends LoniaPacket {
+public class CPacketArmAnimation extends LoniaPacket {
 
     private PlayerHand hand;
 
-    public SPacketArmAnimation(PlayerHand hand) {
+    public CPacketArmAnimation(PlayerHand hand) {
         this.hand = hand;
     }
 

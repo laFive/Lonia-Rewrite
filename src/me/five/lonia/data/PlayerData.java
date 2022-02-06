@@ -41,6 +41,8 @@ public class PlayerData {
     private List<Check> loadedChecks;
     private int groundTicks;
     private int airTicks;
+    private boolean usingItem;
+    private int foodLevel;
 
     public PlayerData(Player player, int versionNumber) {
         this.player = player;
@@ -129,8 +131,25 @@ public class PlayerData {
         return ridingEntity;
     }
 
+
+    public boolean isUsingItem() {
+        return usingItem;
+    }
+
+    public void setUsingItem(boolean usingItem) {
+        this.usingItem = usingItem;
+    }
+
     public long getMaxPing() {
         return Math.max(Math.max(averageTransactionPing, transactionPing), lastTransactionPing);
+    }
+
+    public int getFoodLevel() {
+        return foodLevel;
+    }
+
+    public void setFoodLevel(int foodLevel) {
+        this.foodLevel = foodLevel;
     }
 
     public boolean isRidingEntityServer() {

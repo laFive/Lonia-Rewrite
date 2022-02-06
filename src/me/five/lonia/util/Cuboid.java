@@ -106,6 +106,17 @@ public class Cuboid {
         return other.getX2() > this.getX1() && other.getX1() < this.getX2() ? (other.getY2() > this.getY1() && other.getY1() < this.getY2() ? other.getZ2() > this.getZ1() && other.getZ1() < this.getZ2() : false) : false;
     }
 
+    public boolean intersectsWithVector(VectorLocation vec) {
+        if (vec.getX() < x1 || vec.getX() > x2) {
+            return false;
+        } else if (vec.getY() < y1 || vec.getY() > y2) {
+            return false;
+        } else if (vec.getZ() < z1 || vec.getZ() > z2) {
+            return false;
+        }
+        return true;
+    }
+
     public double getX1() {
         return x1;
     }

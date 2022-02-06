@@ -13,6 +13,7 @@ public class KillAuraB extends Check {
 
     public KillAuraB() {
         super("KillAura", "B", 0, 3, true, EnumCheckVersions.LEGACY);
+        setDescription("Checks for block places on same tick as attack (AutoBlock/Scaffold)");
     }
 
     @Override

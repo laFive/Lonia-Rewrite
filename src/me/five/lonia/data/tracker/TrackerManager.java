@@ -5,6 +5,8 @@ import me.five.lonia.packet.server.SPacketEntityMove;
 import me.five.lonia.packet.server.SPacketEntityTeleport;
 import me.five.lonia.packet.server.SPacketSpawnEntity;
 import me.five.lonia.util.VectorLocation;
+import org.bukkit.Bukkit;
+import org.bukkit.block.data.type.BubbleColumn;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +47,10 @@ public class TrackerManager {
 
     public Collection<EntityTracker> getTrackers() {
         return trackerMap.values();
+    }
+
+    public void tickTrackers() {
+        trackerMap.values().forEach(t -> t.tick());
     }
 
     public void clearTrackers() {

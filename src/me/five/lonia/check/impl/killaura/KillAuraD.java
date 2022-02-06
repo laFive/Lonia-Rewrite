@@ -1,6 +1,5 @@
 package me.five.lonia.check.impl.killaura;
 
-import me.five.lonia.Lonia;
 import me.five.lonia.check.Check;
 import me.five.lonia.data.tracker.EntityTracker;
 import me.five.lonia.packet.LoniaPacket;
@@ -10,20 +9,20 @@ import me.five.lonia.util.Cuboid;
 import me.five.lonia.util.MinecraftUtil;
 import me.five.lonia.util.UseEntityAction;
 import me.five.lonia.util.VectorLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KillAuraD extends Check {
 
+    private int threshold;
     private boolean attacked;
-    private List<Cuboid> entityLocations;
+    private EntityTracker attackedEntity;
 
     public KillAuraD() {
         super("KillAura", "D", 0, 8, true);
-        entityLocations = new ArrayList<>();
+        setDescription("Checks for attacks outside of the target hitbox (KillAura/Hitbox)");
     }
 
     @Override
@@ -34,42 +33,43 @@ public class KillAuraD extends Check {
             CPacketUseEntity useEntityPacket = (CPacketUseEntity) packet;
             EntityTracker tracker = getData().getEntityTrackerManager().getTracker(useEntityPacket.getEntityId());
             if (!useEntityPacket.getAction().equals(UseEntityAction.ATTACK) || tracker == null) return;
-            entityLocations.clear();
-            tracker.getRecentLocations(4).stream().forEach(l -> entityLocations.add(l.toBoundingBox(tracker.getEntity())));
             attacked = true;
+            attackedEntity = tracker;
 
         }
 
         if (packet instanceof CPacketFlying) {
 
-            if (attacked && entityLocations.size() > 3) {
+            if (attacked) {
+
+                attacked = false;
+                List<Cuboid> entityLocations = new ArrayList<>();
+                attackedEntity.getRecentLocations(4).stream().forEach(l -> entityLocations.add(l.toBoundingBox(attackedEntity.getEntity()).expand(0.2, 0.2, 0.2)));
 
                 VectorLocation eyePos = MinecraftUtil.getEyeVector(getData().getLocation().toVectorLocation(), getData().getPlayer());
                 VectorLocation lookVector = MinecraftUtil.getLook(getData().getLocation().getYaw(), getData().getLocation().getPitch());
-                VectorLocation raytrace = new VectorLocation(eyePos.getX() + lookVector.getX() * 8,
-                        eyePos.getY() + lookVector.getY() * 8, eyePos.getZ() + lookVector.getZ() * 8);
-
-                boolean trace = false;
-
-                for (Cuboid c : entityLocations) {
-
-                    boolean x1trace = (c.getX1() < raytrace.getX() && c.getX1() > eyePos.getX()) || (c.getX1() > raytrace.getX() && c.getX1() < eyePos.getX());
-                    boolean x2trace = (c.getX2() < raytrace.getX() && c.getX2() > eyePos.getX()) || (c.getX2() > raytrace.getX() && c.getX2() < eyePos.getX());
-                    boolean xtrace = x1trace || x2trace;
-                    boolean z1trace = (c.getZ1() < raytrace.getZ() && c.getZ1() > eyePos.getZ()) || (c.getZ1() > raytrace.getZ() && c.getZ1() < eyePos.getZ());
-                    boolean z2trace = (c.getZ2() < raytrace.getZ() && c.getZ2() > eyePos.getZ()) || (c.getZ2() > raytrace.getZ() && c.getZ2() < eyePos.getZ());
-                    boolean ztrace = z1trace || z2trace;
-                    if (xtrace && ztrace || c.intersectsWith(getData().getBoundingBox())) trace = true;
-
+                List<VectorLocation> traceVectors = new ArrayList<>();
+                for (double d = 0; d < 6D; d += 0.1) {
+                    traceVectors.add(new VectorLocation(eyePos.getX() + lookVector.getX() * d,
+                            eyePos.getY() + lookVector.getY() * d, eyePos.getZ() + lookVector.getZ() * d));
                 }
 
-                if (!trace) {
-                    Bukkit.broadcastMessage(ChatColor.RED + "trol");
+                AtomicBoolean trace = new AtomicBoolean(false);
+                entityLocations.forEach(l -> {
+                    for (VectorLocation tr : traceVectors) {
+                        if (l.intersectsWithVector(tr)) trace.set(true);
+                    }
+                });
+
+                if (!trace.get()) {
+                    if (++threshold > 1) flag(1, "Threshold:" + threshold + " EntityType:" + attackedEntity.getEntity().getType().toString() + " Version:" + getData().getClientVersion().toString());
+                    return;
                 }
+
+                threshold = Math.max(0, --threshold);
+                pass(0.001);
 
             }
-
-            attacked = false;
 
         }
 

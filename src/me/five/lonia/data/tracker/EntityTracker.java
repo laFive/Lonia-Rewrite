@@ -54,10 +54,10 @@ public class EntityTracker {
         Iterator<Map.Entry<Short, VectorLocation>> pendingIterator = pendingLocations.entrySet().iterator();
         while (pendingIterator.hasNext()) {
             Map.Entry<Short, VectorLocation> e = pendingIterator.next();
-            if (e.getKey() != uid) return;
+            if (e.getKey() != uid) continue;
             clientLocations.add(e.getValue());
-            pendingIterator.remove();
             clientLocations.remove(0);
+            pendingIterator.remove();
         }
 
     }
@@ -69,7 +69,17 @@ public class EntityTracker {
         for (int i = clientLocations.size() - ++amount; i < clientLocations.size(); i++) {
             locList.add(clientLocations.get(i));
         }
+        locList.add(clientLocations.get(clientLocations.size() - 1));
         return locList;
+
+    }
+
+    public void tick() {
+        if (clientLocations.size() == 20) {
+            clientLocations.remove(0);
+            VectorLocation newestLocation = clientLocations.get(clientLocations.size() - 1);
+            clientLocations.add(new VectorLocation(newestLocation.getX(), newestLocation.getY(), newestLocation.getZ()));
+        }
 
     }
 

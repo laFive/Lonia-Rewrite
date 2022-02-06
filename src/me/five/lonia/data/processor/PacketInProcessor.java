@@ -8,6 +8,7 @@ import me.five.lonia.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -49,6 +50,46 @@ public class PacketInProcessor {
                 }
 
             }
+
+        }
+
+        if (packet instanceof CPacketBlockPlace) {
+
+            CPacketBlockPlace blockPlace = (CPacketBlockPlace) packet;
+
+            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(0);
+            if (heldItem == null || heldItem.getType().equals(Material.AIR) || !MinecraftUtil.isUseItem(blockPlace.getBlockPos())) return;
+            if (heldItem.getType().isEdible() || heldItem.getType().name().contains("SWORD")) {
+                if (heldItem.getType().isEdible() && playerData.getPlayer().getFoodLevel() >= 20) return;
+                playerData.setUsingItem(true);
+                playerData.getTickerMap().put(Ticker.USE_ITEM, 8);
+            }
+
+        }
+
+        if (packet instanceof CPacketUseItem) {
+
+            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(0);
+            if (heldItem == null || heldItem.getType().equals(Material.AIR)) return;
+            if (heldItem.getType().isEdible() || heldItem.getType().name().contains("SWORD")) {
+                if (heldItem.getType().isEdible() && playerData.getPlayer().getFoodLevel() >= 20) return;
+                playerData.setUsingItem(true);
+                playerData.getTickerMap().put(Ticker.USE_ITEM, 8);
+            }
+
+        }
+
+        if (packet instanceof CPacketSetHeldItemSlot) {
+
+            playerData.setUsingItem(false);
+
+        }
+
+        if (packet instanceof CPacketBlockDig) {
+
+            CPacketBlockDig blockDigPacket = (CPacketBlockDig) packet;
+            if (!blockDigPacket.getAction().equals(PlayerDigAction.RELEASE_USE_ITEM)) return;
+            playerData.setUsingItem(false);
 
         }
 

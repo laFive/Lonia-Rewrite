@@ -18,4 +18,13 @@ public class MinecraftUtil {
         return new VectorLocation(location.getX(), location.getY() + (0.85 * height), location.getZ());
     }
 
+    public static boolean isUseItem(LoniaBlockLocation blockLocation) {
+
+        if (blockLocation.getBlockX() != 0 && blockLocation.getBlockX() != -1) return false;
+        if (blockLocation.getBlockY() != 0 && blockLocation.getBlockY() != -1) return false;
+        if (blockLocation.getBlockZ() != 0 && blockLocation.getBlockZ() != -1) return false;
+        return true;
+
+    }
+
 }

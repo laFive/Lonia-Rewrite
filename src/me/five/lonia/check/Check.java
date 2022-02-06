@@ -24,6 +24,7 @@ public class Check {
     private boolean enabled;
     private boolean autoban;
     private PlayerData data;
+    private String description;
     private EnumCheckVersions checkVersions;
 
     public Check(String type, String subType, int alertVl, int banVl, boolean autoban) {
@@ -119,6 +120,14 @@ public class Check {
 
     public PlayerData getData() {
         return data;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getType() {

@@ -15,6 +15,7 @@ public enum Ticker {
     SLIPPY_BLOCK,
     UNDER_BLOCK,
     GLIDING,
-    RIPTIDE;
+    RIPTIDE,
+    USE_ITEM;
 
 }
