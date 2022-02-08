@@ -10,6 +10,7 @@ import me.five.lonia.check.impl.killaura.*;
 import me.five.lonia.check.impl.badpackets.BadPacketsF;
 import me.five.lonia.check.impl.scaffold.ScaffoldA;
 import me.five.lonia.check.impl.speed.SpeedA;
+import me.five.lonia.check.impl.speed.SpeedB;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ClientVersion;
 import me.five.lonia.util.EnumCheckVersions;
@@ -41,6 +42,7 @@ public class CheckManager {
         checks.add(new ScaffoldA());
         checks.add(new BadPacketsF());
         checks.add(new SpeedA());
+        checks.add(new SpeedB());
         return checks;
     }
 

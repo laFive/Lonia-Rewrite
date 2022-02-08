@@ -9,6 +9,7 @@ import me.five.lonia.util.Ticker;
 
 public class SpeedA extends Check {
 
+    private int threshold;
     private double lastMotion;
 
     public SpeedA() {
@@ -43,11 +44,13 @@ public class SpeedA extends Check {
 
             if (motion > predictedMotionXZ && difference > 0.027 && (lastMotion > 6E-2 || motion > 6E-2)) {
 
+                if ((threshold += 10) < 30) return;
                 flag(1, "Motion:" + motion + " LastMotion:" + lastMotion + " Prediction:" + predictedMotionXZ + " Difference:" + difference + " Version:" + getData().getClientVersion().toString());
                 return;
 
             }
 
+            threshold = Math.max(0, --threshold);
             pass(1E-4);
 
         }

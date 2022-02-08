@@ -183,6 +183,9 @@ public class PlayerData {
 
     public void setSneaking(boolean sneaking) {
         this.sneaking = sneaking;
+        if (!sneaking) {
+            tickerMap.put(Ticker.STOP_SPRINT, 8);
+        }
     }
 
     public int getRidingEntityId() {
