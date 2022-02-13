@@ -4,6 +4,7 @@ import me.five.lonia.check.Check;
 import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.packet.client.CPacketFlying;
 import me.five.lonia.packet.server.SPacketPosition;
+import me.five.lonia.util.ClientVersion;
 import org.bukkit.Bukkit;
 
 public class TimerA extends Check {
@@ -21,6 +22,8 @@ public class TimerA extends Check {
     public void handle(LoniaPacket packet) {
 
         if (packet instanceof CPacketFlying) {
+
+            if (getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_17) && getData().getLocation().positionEquals(getData().getLastLocation())) return;
 
             long lastFlying = this.lastFlying;
             this.lastFlying = System.currentTimeMillis();

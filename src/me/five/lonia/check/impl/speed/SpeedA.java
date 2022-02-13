@@ -44,7 +44,7 @@ public class SpeedA extends Check {
             double predictedMotionXZ = lastMotion * 0.91D;
             double difference = Math.abs(motion - predictedMotionXZ);
 
-            if (motion > predictedMotionXZ && difference > 0.027 && (lastMotion > 6E-2 || motion > 6E-2)) {
+            if (motion > predictedMotionXZ && difference > 0.027 && Math.abs(lastMotion) > 3E-2) {
 
                 if ((threshold += 10) < 30) return;
                 flag(1, "Motion:" + motion + " LastMotion:" + lastMotion + " Prediction:" + predictedMotionXZ + " Difference:" + difference + " Version:" + getData().getClientVersion().toString());

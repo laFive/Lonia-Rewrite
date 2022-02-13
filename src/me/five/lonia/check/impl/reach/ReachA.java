@@ -11,6 +11,7 @@ import me.five.lonia.util.UseEntityAction;
 import me.five.lonia.util.VectorLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,8 @@ public class ReachA extends Check {
                 if (distances.isEmpty()) return;
 
                 double minDistance = distances.stream().mapToDouble(d -> d).min().orElse(0);
-                if (minDistance > 3.13D && minDistance < 6.5f) {
+                double allowedDistance = getData().getPlayer().getGameMode().equals(GameMode.CREATIVE) ? 4.5D : 3.13D;
+                if (minDistance > allowedDistance && minDistance < 6.5f) {
                     if ((threshold += 6) >= 12) {
                         flag(1, "Threshold:" + threshold + " Distance:" + minDistance + " TotalDistances:" + distances.size());
                         return;

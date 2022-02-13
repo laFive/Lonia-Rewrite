@@ -58,6 +58,7 @@ public class PacketInProcessor {
 
             CPacketBlockPlace blockPlace = (CPacketBlockPlace) packet;
 
+            if (playerData.getClientVersion().isNewerOrEqual(ClientVersion.v1_9)) return;
             ItemStack heldItem = playerData.getPlayer().getInventory().getItem(playerData.getItemSlot());
             if (heldItem != null && MinecraftUtil.isUseItem(blockPlace.getBlockPos())) {
                 if (Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {

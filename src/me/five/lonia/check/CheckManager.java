@@ -15,6 +15,7 @@ import me.five.lonia.check.impl.speed.SpeedB;
 import me.five.lonia.check.impl.speed.SpeedC;
 import me.five.lonia.check.impl.timer.TimerA;
 import me.five.lonia.check.impl.timer.TimerB;
+import me.five.lonia.check.impl.velocity.VelocityA;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.util.ClientVersion;
 import me.five.lonia.util.EnumCheckVersions;
@@ -51,6 +52,7 @@ public class CheckManager {
         checks.add(new TimerA());
         checks.add(new TimerB());
         checks.add(new ReachA());
+        checks.add(new VelocityA());
         return checks;
     }
 

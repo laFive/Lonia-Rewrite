@@ -56,6 +56,7 @@ public class PacketOutProcessor {
             VelocityTransaction velocityTransaction = new VelocityTransaction(playerData.getTickNumber(), velocityTicks);
             playerData.getTransactionManager().addTransaction(velocityTransaction);
             playerData.getTickerMap().put(Ticker.VELOCITY, playerData.getPingTicks() + 1);
+            playerData.getTickerMap().put(Ticker.VELOCITY_TICK, playerData.getPingTicks() + 1);
             playerData.getTickerMap().put(Ticker.SERVER_VELOCITY, velocityTicks);
 
         }

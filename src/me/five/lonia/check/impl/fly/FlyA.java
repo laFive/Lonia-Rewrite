@@ -21,6 +21,14 @@ public class FlyA extends Check {
 
         if (packet instanceof CPacketFlying) {
 
+
+            /*
+             * We do this because 1.17+ clients send an additional C06 on right click.
+             * This additional packet has the same position as the last sent flying
+             * packet.
+             */
+            if (getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_17) && getData().getLocation().positionEquals(getData().getLastLocation())) return;
+
             double motionY = getData().getLocation().getPosY() - getData().getLastLocation().getPosY();
             double lastMotionY = this.lastMotionY;
             this.lastMotionY = motionY;
@@ -37,13 +45,6 @@ public class FlyA extends Check {
                     || !(!getData().getLocation().isOnGround() && !getData().getLastLocation().isOnGround())) {
                 return;
             }
-
-            /*
-             * We do this because 1.17+ clients send an additional C06 on right click.
-             * This additional packet has the same position as the last sent flying
-             * packet.
-             */
-            if (getData().getClientVersion().isNewerOrEqual(ClientVersion.v1_17) && getData().getLocation().positionEquals(getData().getLastLocation())) return;
 
             double predictedMotionY = (lastMotionY - 0.08D) * 0.9800000190734863D;
 
