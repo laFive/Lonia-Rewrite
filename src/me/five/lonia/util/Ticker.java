@@ -18,6 +18,7 @@ public enum Ticker {
     RIPTIDE,
     USE_ITEM,
     VELOCITY_TICK,
-    STOP_SPRINT;
+    STOP_SPRINT,
+    COLLISION;
 
 }

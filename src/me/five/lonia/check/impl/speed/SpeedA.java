@@ -33,6 +33,8 @@ public class SpeedA extends Check {
             if (getData().getTickerMap().getOrDefault(Ticker.VELOCITY_TICK, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.STAIRS, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.RIPTIDE, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.COLLISION, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.WORLD_LOADED, 0) < 200
                     || getData().getActiveEffects().containsKey(EntityEffectType.LEVITATION)
                     || getData().getActiveEffects().containsKey(EntityEffectType.SLOW_FALLING)
                     || getData().isTeleporting() || getData().isFlying() || getData().isRidingEntity() || getData().getAirTicks() < 2) {

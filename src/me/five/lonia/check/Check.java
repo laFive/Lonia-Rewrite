@@ -4,6 +4,9 @@ import me.five.lonia.Lonia;
 import me.five.lonia.data.PlayerData;
 import me.five.lonia.packet.LoniaPacket;
 import me.five.lonia.util.EnumCheckVersions;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.Map;
 
 public class Check {
 
@@ -63,14 +67,27 @@ public class Check {
         }
         if (violationLevel >= minAlertVl) {
             int friendlyVl = (int) Math.floor(violationLevel);
+            TextComponent message = new TextComponent(ChatColor.DARK_GRAY + "[" + ChatColor.translateAlternateColorCodes('&',
+                    Lonia.getInstance().getLoniaConfig().getColor()) + ChatColor.BOLD +
+                    Lonia.getInstance().getLoniaConfig().getPluginName() + ChatColor.DARK_GRAY +
+                    "] " + ChatColor.GOLD + data.getPlayer().getName() + ChatColor.GRAY + " has failed " +
+                    ChatColor.GOLD + type + " " + subType + ChatColor.GRAY + " (x" + friendlyVl + ")");
+            StringBuilder detailsStringBuilder = new StringBuilder();
+            detailsStringBuilder.append(ChatColor.GRAY + "* " + description + "\n");
+            String[] verboseArray = verbose.split(" ");
+            for (String verboseEntry : verboseArray) {
+                String[] entryArray = verboseEntry.split(":");
+                detailsStringBuilder.append(ChatColor.GRAY + "* " + entryArray[0] + ": " + ChatColor.translateAlternateColorCodes('&',
+                        Lonia.getInstance().getLoniaConfig().getColor()) + entryArray[1] + "\n");
+            }
+            detailsStringBuilder.append("\n" + ChatColor.GRAY + "* Ping: " + ChatColor
+                    .translateAlternateColorCodes('&', Lonia.getInstance().getLoniaConfig().getColor())
+                    + data.getKeepAlivePing());
+            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(detailsStringBuilder.toString()).create()));
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!player.hasPermission("lonia.alerts")) continue;
                 if (!Lonia.getInstance().getLoniaConfig().isPlayerAlerts(player.getUniqueId())) continue;
-                player.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.translateAlternateColorCodes('&',
-                        Lonia.getInstance().getLoniaConfig().getColor()) + ChatColor.BOLD +
-                        Lonia.getInstance().getLoniaConfig().getPluginName() + ChatColor.DARK_GRAY +
-                        "] " + ChatColor.GOLD + data.getPlayer().getName() + ChatColor.GRAY + " has failed " +
-                        ChatColor.GOLD + type + " " + subType + ChatColor.GRAY + " (x" + friendlyVl + ")");
+                player.spigot().sendMessage(message);
             }
         }
         if (violationLevel >= minBanVl && !data.isBanned()) {

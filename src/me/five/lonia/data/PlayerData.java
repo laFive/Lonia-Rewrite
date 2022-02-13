@@ -74,6 +74,12 @@ public class PlayerData {
             tickerMap.put(tickerEntry.getKey(), tickerEntry.getValue() - 1);
             if (tickerMap.get(tickerEntry.getKey()) == 0) tickerIterator.remove();
         }
+        Iterator<Map.Entry<EntityEffectType, EntityEffectData>> effectIterator = activeEffects.entrySet().iterator();
+        while (effectIterator.hasNext()) {
+            Map.Entry<EntityEffectType, EntityEffectData> effect = effectIterator.next();
+            effect.getValue().setTicks(effect.getValue().getTicks() - 1);
+            if (effect.getValue().getTicks() == 0) effectIterator.remove();
+        }
     }
 
     public int getPingTicks() {
@@ -174,6 +180,9 @@ public class PlayerData {
     }
 
     public void setSprinting(boolean sprinting) {
+        if (!sprinting && this.sprinting) {
+            tickerMap.put(Ticker.STOP_SPRINT, 3);
+        }
         this.sprinting = sprinting;
     }
 
@@ -183,9 +192,6 @@ public class PlayerData {
 
     public void setSneaking(boolean sneaking) {
         this.sneaking = sneaking;
-        if (!sneaking) {
-            tickerMap.put(Ticker.STOP_SPRINT, 8);
-        }
     }
 
     public int getRidingEntityId() {

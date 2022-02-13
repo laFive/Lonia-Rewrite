@@ -6,16 +6,15 @@ import me.five.lonia.packet.client.CPacketFlying;
 import me.five.lonia.util.EntityEffectType;
 import me.five.lonia.util.Ticker;
 
-public class SpeedB extends Check {
+public class SpeedC extends Check {
 
-    private double lastMotion;
-    private static double SPRINT_SPEED_MULTIPLIER = 2.865;
-    private static double WALK_SPEED_MULTIPLIER = 2.35;
-    private static double SNEAK_MULTIPLIER = 1;
+    private static double JUMP_MULTIPLIER = 6.2f;
+    private static double FAST_AIR_MULTIPLIER = 3.8f;
+    private static double AIR_MULTIPLIER = 3.5f;
 
-    public SpeedB() {
-        super("Speed", "B", 5, 12, true);
-        setDescription("Checks for invalid movement on ground (Speed/TP)");
+    public SpeedC() {
+        super("Speed", "C", 4, 12, true);
+        setDescription("Checks for invalid movement off ground (Speed/Fly)");
     }
 
     @Override
@@ -28,39 +27,35 @@ public class SpeedB extends Check {
             double motionX = getData().getLocation().getPosX() - getData().getLastLocation().getPosX();
             double motionZ = getData().getLocation().getPosZ() - getData().getLastLocation().getPosZ();
             double motion = Math.sqrt((motionX * motionX) + (motionZ * motionZ));
-            double lastMotion = this.lastMotion;
-            this.lastMotion = motion;
 
             if (getData().isFlying() || getData().isRidingEntity() || getData().isTeleporting()
                     || getData().getTickerMap().getOrDefault(Ticker.GLIDING, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.VELOCITY, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.SLIPPY_BLOCK, 0) > 0
                     || getData().getTickerMap().getOrDefault(Ticker.RIPTIDE, 0) > 0
-                    || getData().getTickerMap().getOrDefault(Ticker.COLLISION, 0) > 0) return;
+                    || getData().getTickerMap().getOrDefault(Ticker.UNDER_BLOCK, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.COLLISION, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.WORLD_LOADED, 0) < 200
+                    || getData().getTickerMap().getOrDefault(Ticker.SLABS, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.STAIRS, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.ABNORMAL_VELOCITY, 0) > 0
+                    || getData().getTickerMap().getOrDefault(Ticker.LAUNCH_BLOCK, 0) > 0) return;
 
-            if (getData().getLocation().isOnGround()) {
+            if (!getData().getLocation().isOnGround()) {
 
-                double multiplier;
-                if (getData().isSprinting() || getData().getTickerMap().getOrDefault(Ticker.STOP_SPRINT, 0) > 0) {
-                    multiplier = SPRINT_SPEED_MULTIPLIER;
-                } else if (!getData().isSneaking()) {
-                    multiplier = WALK_SPEED_MULTIPLIER;
-                } else {
-                    multiplier = SNEAK_MULTIPLIER;
-                }
+
+                double multiplier = getData().getAirTicks() == 1 ? JUMP_MULTIPLIER : getData().getAirTicks() <= 3 ? FAST_AIR_MULTIPLIER : AIR_MULTIPLIER;
                 double allowed = getData().getLoniaAbilities().getWalkSpeed() * multiplier;
                 allowed = getData().getActiveEffects().containsKey(EntityEffectType.SPEED) && getData().getActiveEffects().get(EntityEffectType.SPEED).getTicks() > 0
                         ? (allowed + (getData().getActiveEffects().get(EntityEffectType.SPEED).getAmplifier() + 1) * 0.08f)
                         : allowed;
-                double lastMotionAllowance = (lastMotion * (0.91 * 0.6)) + allowed;
-                allowed = getData().getGroundTicks() <= 8 ? Math.max(allowed, lastMotionAllowance) : allowed;
                 double difference = Math.abs(motion - allowed);
-                if (difference < 0.03 || motion < allowed) {
+                if (motion <= allowed || difference < 0.03) {
                     pass(0.001);
                     return;
                 }
 
-                flag(1, "Motion:" + motion + " LastMotion:" + lastMotion + " Difference:" + difference + " Allowed:" + allowed + "Version:" + getData().getClientVersion().toString());
+                flag(1, "Motion:" + motion + " AirTicks:" + getData().getAirTicks() + " Difference:" + difference + " Allowed:" + allowed + "Version:" + getData().getClientVersion().toString());
 
             }
 

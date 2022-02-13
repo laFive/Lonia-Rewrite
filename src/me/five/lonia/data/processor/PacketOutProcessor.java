@@ -103,7 +103,6 @@ public class PacketOutProcessor {
             EntityEffectData effectData = new EntityEffectData(entityEffect.getEffectType(), entityEffect.getEffectTicks(), entityEffect.getEffectAmplifier());
             EffectTransaction effectTransaction = new EffectTransaction(playerData.getTickNumber(), effectData);
             playerData.getTransactionManager().addTransaction(effectTransaction);
-            playerData.setUsingItem(false);
 
         }
 
@@ -161,22 +160,14 @@ public class PacketOutProcessor {
 
         }
 
-        if (packet instanceof SPacketHealth) {
-
-            SPacketHealth healthPacket = (SPacketHealth) packet;
-            if (healthPacket.getFood() != playerData.getFoodLevel()) {
-                playerData.setFoodLevel(healthPacket.getFood());
-                playerData.setUsingItem(false);
-            }
-
-        }
-
         if (packet instanceof SPacketKeepAlive) {
 
             SPacketKeepAlive keepAlive = (SPacketKeepAlive) packet;
             playerData.getKeepAliveMap().put(keepAlive.getId(), System.currentTimeMillis());
 
         }
+
+        playerData.getLoadedChecks().forEach(c -> c.handle(packet));
 
     }
 

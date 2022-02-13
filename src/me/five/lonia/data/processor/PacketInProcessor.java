@@ -8,6 +8,7 @@ import me.five.lonia.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -59,26 +60,10 @@ public class PacketInProcessor {
 
             ItemStack heldItem = playerData.getPlayer().getInventory().getItem(playerData.getItemSlot());
             if (heldItem != null && MinecraftUtil.isUseItem(blockPlace.getBlockPos())) {
-                if (Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType())
-                        || Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {
-                    if (Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType()) && playerData.getFoodLevel() >= 20) {
-                        playerData.setUsingItem(true);
-                        playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
-                    } else if (Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {
-                        playerData.setUsingItem(true);
-                        playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
-                    }
+                if (Lonia.getInstance().getBlockManager().getSwordItems().contains(heldItem.getType())) {
+                    playerData.setUsingItem(true);
+                    playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
                 }
-            }
-
-        }
-
-        if (packet instanceof CPacketUseItem) {
-
-            ItemStack heldItem = playerData.getPlayer().getInventory().getItem(playerData.getItemSlot());
-            if (heldItem != null && Lonia.getInstance().getBlockManager().getUseItems().contains(heldItem.getType()) && playerData.getFoodLevel() >= 20) {
-                playerData.setUsingItem(true);
-                playerData.getTickerMap().put(Ticker.USE_ITEM, 6);
             }
 
         }
@@ -157,6 +142,15 @@ public class PacketInProcessor {
             }
             if (boundingBox.modify(0, 0, 1.8, 3.8, 0, 0).checkBlocksExcept(playerData.getPlayer(), Arrays.asList(Material.AIR))) {
                 playerData.getTickerMap().put(Ticker.UNDER_BLOCK, 5);
+            }
+            if (Lonia.getInstance().getNMSManager().getVersion().isNewerOrEqual(ServerVersion.v1_9_R1)) {
+                playerData.getEntityTrackerManager().getTrackers().stream().filter(t -> t.getEntity() instanceof LivingEntity).forEach(t -> {
+                    t.getRecentLocations(5).forEach(pl -> {
+                        if (pl.toBoundingBox(t.getEntity()).intersectsWith(playerData.getBoundingBox())) {
+                            playerData.getTickerMap().put(Ticker.COLLISION, 3);
+                        }
+                    });
+                });
             }
 
             if (Lonia.getInstance().getNMSManager().getVersion().isNewerOrEqual(ServerVersion.v1_9_R1)) {

@@ -17,7 +17,7 @@ public class VelocityTransaction extends Transaction {
     public void onTransaction(PlayerData data) {
 
         data.getTickerMap().put(Ticker.VELOCITY, velocityTicks);
-        data.getTickerMap().put(Ticker.VELOCITY_TICK, 2);
+        data.getTickerMap().put(Ticker.VELOCITY_TICK, 3);
 
     }
 

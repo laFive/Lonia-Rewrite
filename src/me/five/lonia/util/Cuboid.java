@@ -38,6 +38,20 @@ public class Cuboid {
 
     }
 
+    public double distanceXZ(double x, double z) {
+
+        if (containsXZ(x, z)) return 0;
+
+        double minDistX = Math.min(x1 - x, x2 - x);
+        double minDistZ = Math.min(z1 - z, z2 - z);
+        return Math.sqrt((minDistX * minDistX) + (minDistZ * minDistZ));
+
+    }
+
+    public boolean containsXZ(double x, double z) {
+        return x1 <= x && x2 >= x && z1 <= z && z2 >= z;
+    }
+
     public Cuboid expand(double x, double y, double z) {
 
         return new Cuboid(x1 - x, x2 + x, y1 - y, y2 + y, z1 - z, z2 + z);

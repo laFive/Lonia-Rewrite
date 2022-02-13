@@ -11,7 +11,7 @@ public class BadPacketsF extends Check {
 
     public BadPacketsF() {
         super("BadPackets", "F", 0, 8, true);
-        setDescription("Checks for sprinting while using an item");
+        setDescription("Checks for sprinting while blocking with a sword");
     }
 
     @Override
